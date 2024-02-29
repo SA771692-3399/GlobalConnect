@@ -187,7 +187,92 @@ function Profile() {
         </div>
       </header>
 
-      {displayProfilePage ? <ProfilePage /> : <div></div>}
+      {displayProfilePage ? <ProfilePage /> : <div className="main">
+          <div className="sidebar">
+            <h2>Categories</h2>
+
+            <ul className="category-list">
+              <li>
+                <Link onClick={() => handleCategoryClick("")}>All</Link>
+              </li>
+
+              <li>
+                <Link onClick={() => handleCategoryClick("Clothing")}>
+                  Clothing
+                </Link>
+              </li>
+
+              <li>
+                <Link onClick={() => handleCategoryClick("Food")}>Food</Link>
+              </li>
+
+              <li>
+                <Link onClick={() => handleCategoryClick("Local business")}>
+                  Local Business
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="products">
+            {selectedProduct ? (
+              <div className="product-details">
+                <h2>{selectedProduct.name}</h2>
+
+                <p>Price: ${selectedProduct.price}</p>
+
+                <p>Available Quantity: {selectedProduct.quantity}</p>
+
+                <p>Description: {selectedProduct.description}</p>
+
+                <button className="add-to-cart-btn">Add to Cart</button>
+              </div>
+            ) : (
+              <React.Fragment>
+                <h2>All Products</h2>
+
+                <div className="product-list">
+                  {filteredProducts.map((product) => (
+                    <div
+                      key={product._id}
+                      className="product-item"
+                      onClick={() => handleProductClick(product)} // Add onClick handler
+                    >
+                      <div className="product-card">
+                        <img
+                          src={`http://localhost:8000/${product.image}`}
+                          alt={product.name}
+                          className="product-image"
+                        />
+
+                        <div className="product-details">
+                          <h3 className="product-name">{product.name}</h3>
+
+                          <p className="product-price">
+                            Price: ${product.price}
+                          </p>
+
+                          <p className="product-quantity">
+                            Available Quantity: {product.quantity}
+                          </p>
+
+                          <p className="product-description">
+                            {product.description}
+                          </p>
+
+                          <button className="add-to-cart-btn">
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </React.Fragment>
+            )}
+          </div>
+        </div>
+}
     </div>
   );
 }
