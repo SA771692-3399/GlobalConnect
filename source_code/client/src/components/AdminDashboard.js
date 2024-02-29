@@ -77,6 +77,73 @@ function AdminDashboard() {
       setErrorMessage("Failed to fetch data");
     }
   };
+  const handleInputChange = (e) => {
+    const { name, value, files } = e.target;
+    if (files) {
+      setFormData({
+        ...formData,
+        [name]: files[0],
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
+
+
+
+  const handleUpdateDetails = async (e) => {
+    e.preventDefault();
+    try {
+      const { id, username, email, phoneNumber, address, password, newPassword } =
+        formData;
+
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found");
+
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      const res = await axios.put("http://localhost:8000/api/updateProfile", {
+        id,
+        username,
+        email,
+        phoneNumber,
+        address,
+        password,
+        newPassword,
+      });
+      setDetails(res.data.User);
+      setSuccessMessage("User details updated successfully");
+    } catch (error) {
+      console.error("Error updating user details:", error.message);
+      setErrorMessage("Failed to update user details");
+    }
+  };
+
+
+
+
+  const handleEditUser = (id) => {
+    // Find the user by ID
+    const user = users.find((user) => user._id === id);
+    // Set the form data to the details of the user being edited
+    setFormData({
+      id: user._id,
+      username: user.UserName,
+      email: user.Email,
+      phoneNumber: user.PhoneNumber || "",
+      address: user.Address || "",
+    });
+    // Change the active tab to the settings tab
+    setActiveTab("settings");
+  };
+
+
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
