@@ -1,0 +1,221 @@
+.Admin-dashboard-container {
+    display: flex;
+  }
+  
+  .side-navbar {
+    width: 250px;
+    background-color: #7e5888;
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .navbar-logo {
+    padding: 20px;
+  }
+  
+  .logo {
+    width: 150px;
+  }
+  
+  .navbar-menu {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+  
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .menu-item:hover {
+    background-color: #ffffff;
+    color: #7e5888;
+  }
+  
+  .menu-item svg,
+  .user-profile svg {
+    margin-right: 10px;
+  }
+  
+  .user-profile {
+    margin-top: auto; 
+    padding: 15px 20px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+  }
+  
+  .main {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .add-product-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .add-product-form {
+    width: 400px;
+    margin-top: 20px;
+  }
+  
+  .add-product-form label {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .add-product-form input,
+  .add-product-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .add-product-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #7e5888;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-product-form button:hover {
+    background-color: #6c4675;
+  }
+  
+  .product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .product-item {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-item p {
+    margin: 0;
+  }
+  
+  .success-message,
+  .error-message {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  .success-message {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .settings-form {
+    width: 50%;
+    margin-top: 50px;
+  }
+  
+  .settings-form input[type="text"],
+  .settings-form input[type="email"],
+  .settings-form input[type="password"],
+  .settings-form textarea,
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  select {
+    width:104%;
+  }
+  
+  .settings-form button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #7e5888;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .settings-form button[type="submit"]:hover {
+    background-color: #6c4675;
+  }
+  
+  .success-message,
+  .error-message {
+    width: 50%;
+    margin-top: 20px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+  }
+  
+  .success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  /* Table CSS */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  thead th, tbody td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  thead th {
+    background-color: #7e5888;
+    color: #fff;
+  }
+  
+  tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  tbody tr:hover {
+    background-color: #ddd;
+  }
