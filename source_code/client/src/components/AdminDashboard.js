@@ -77,6 +77,20 @@ function AdminDashboard() {
       setErrorMessage("Failed to fetch data");
     }
   };
+  const handleDeleteProduct = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found");
+
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      await axios.delete(`http://localhost:8000/api/products/${id}`);
+      setProducts(products.filter((product) => product._id !== id));
+      setSuccessMessage("Product deleted successfully");
+    } catch (error) {
+      console.error("Error deleting product:", error.message);
+      setErrorMessage("Failed to delete product");
+    }
+  };
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     if (files) {
@@ -164,6 +178,26 @@ function AdminDashboard() {
     }
   };
 
+
+
+  const handleEditProduct = (id) => {
+    // Find the product by ID
+    const product = products.find((product) => product._id === id);
+    // Set the form data to the details of the product being edited
+    setFormData({
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      description: product.description,
+      quantity: product.quantity,
+      category: product.category,
+      image: product.image
+    });
+    // Set the editingProduct state to the ID of the product being edited
+    setActiveTab("addProduct");
+    setEditingProduct(id);
+  };
+  
   const handleUpdateDetails = async (e) => {
     e.preventDefault();
     try {
