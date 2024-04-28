@@ -1,5 +1,9 @@
-import React from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import { useAuth } from "../provider/AuthProvider";
 import { ProtectedRoute } from "./ProtectedRoute";
 import Login from "../components/Login";
@@ -11,9 +15,11 @@ import Profile from "../components/Profile";
 import SellerDashboard from "../components/SellersDashboard";
 import AdminDashboard from "../components/AdminDashboard";
 import ResetPassword from "../components/ResetPassword";
+import { useNavigateUrl } from "../provider/AuthProvider";
 
 const Routes = () => {
   const { token } = useAuth();
+  const role = localStorage.getItem("Role");
 
   const PublicRoutes = [
     {
@@ -54,15 +60,61 @@ const Routes = () => {
       ],
     },
   ];
+  const RoutesForUserAuthenticated = [
+    {
+      path: "/",
+      element: <ProtectedRoute component={Home} />,
+      children: [
+        {
+          path: "/",
+          element: <Profile />,
+        },
+        {
+          path: "/logout",
+          element: <Logout />,
+        },
+      ],
+    },
+  ];
+
+  const RoutesForAdminAuthenticated = [
+    {
+      path: "/",
+      element: <ProtectedRoute component={Home} />,
+      children: [
+        {
+          path: "/admin",
+          element: <AdminDashboard />,
+        },
+        {
+          path: "/logout",
+          element: <Logout />,
+        },
+      ],
+    },
+  ];
+
+  const RoutesForSellerAuthenticated = [
+    {
+      path: "/",
+      element: <ProtectedRoute component={Home} />,
+      children: [
+        {
+          path: "/seller-dashboard",
+          element: <AdminDashboard />,
+        },
+        {
+          path: "/logout",
+          element: <Logout />,
+        },
+      ],
+    },
+  ];
 
   const RoutesForNotAuthenticated = [
     {
       path: "/",
       element: <Home />,
-    },
-    {
-      path: "/login",
-      element: <Login />,
     },
     {
       path: "/seller-register",
@@ -81,10 +133,27 @@ const Routes = () => {
       element: <ResetPassword />,
     },
   ];
+  let finalAutheticatedRouter = [];
+  switch (role) {
+    case "User":
+      finalAutheticatedRouter = RoutesForUserAuthenticated;
+      break;
+    case "Seller":
+      finalAutheticatedRouter = RoutesForSellerAuthenticated;
+      break;
+    case "Admin":
+      finalAutheticatedRouter = RoutesForAdminAuthenticated;
+      break;
+  }
+  console.log("test");
 
   const router = createBrowserRouter([
     ...PublicRoutes,
-    ...(token ? RoutesForAuthenticated : RoutesForNotAuthenticated),
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    ...(token ? finalAutheticatedRouter : RoutesForNotAuthenticated),
   ]);
 
   return <RouterProvider router={router} />;
