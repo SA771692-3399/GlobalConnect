@@ -1,0 +1,138 @@
+.smallImg {
+    width: 15%;
+    height: 60px;
+  }
+  .topHeading {
+    font-size: 12px;
+    margin-left: 1.2rem;
+    margin-bottom: -.5rem;
+  }
+  
+  #cds{
+    width: 45rem;
+  }
+  #cardi-img {
+ width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 800px;
+    min-width: 800px;
+    max-height: 600px;
+    min-height: 600px;
+    
+  }
+  
+  #formic{
+    display: flex;
+  }
+  
+  #forms{
+    width: 35rem;
+    margin-top: 1rem;
+  }
+  @media (max-width: 991.98px) { 
+  
+  }
+  @media (max-width: 767.98px) {
+    #cds{
+      width: 32rem;
+    }
+    #forms{
+      width: 32rem;
+      margin-top: 1rem;
+    }
+    #cardi-img {
+   width: 100%;
+      height: 100%;
+      object-fit: cover;
+      max-width: 500px;
+      min-width: 500px;
+      max-height: 500px;
+      min-height: 500px;
+      
+    }
+   }
+  @media (max-width: 575.98px) {
+   
+    #cds{
+      width: 32rem;
+    }
+    #forms{
+      width: 32rem;
+      margin-top: 1rem;
+    }
+    #cardi-img {
+   width: 100%;
+      height: 100%;
+      object-fit: cover;
+      max-width: 500px;
+      min-width: 500px;
+      max-height: 500px;
+      min-height: 500px;
+      
+    }
+  }
+  @media (max-width: 400px) {
+  
+          #cardi-img {
+            width: 100%;
+            max-width: 800px;
+            height: 100%;
+            max-height: 300px;
+          }
+          #smallImg-resp {
+            width: 20%;
+            height: 44px;
+          }
+          #cds{
+            width: 20rem;
+          }
+          #forms{
+            width: 20rem;
+            margin-top: 1rem;
+          }
+          #cardi-img {
+         width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-width: 350px;
+            min-width: 350px;
+            max-height: 350px;
+            min-height: 350px;
+            
+          }
+        
+  }
+  @media (max-width: 300px) {
+  
+         
+          #cardi-img {
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            max-height: 300px;
+          }
+          #smallImg-resp {
+            width: 20%;
+            height: 44px;
+          }
+          #cds{
+            width: 20rem;
+          }
+          #forms{
+            width: 20rem;
+            margin-top: 1rem;
+          }
+          #cardi-img {
+         width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-width: 300px;
+            min-width: 300px;
+            max-height: 300px;
+            min-height: 300px;
+            
+          }
+         
+  }
+
