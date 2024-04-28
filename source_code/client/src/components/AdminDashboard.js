@@ -868,7 +868,106 @@ function AdminDashboard() {
     }
   };
 
- 
+  return (
+    <div className="Admin-dashboard-container">
+      <ToastContainer />
+      <nav className="side-navbar">
+        <div className="navbar-logo">
+          <img src={logo} alt="Company Logo" className="logo" />
+        </div>
+        <ul className="navbar-menu">
+          <li>
+            <Link
+              className={`menu-item ${
+                activeTab === "dashboard" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("dashboard")}
+            >
+              <FontAwesomeIcon icon={faHome} />
+              <span>Dashboard</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${activeTab === "orders" ? "active" : ""}`}
+              onClick={() => setActiveTab("orders")}
+            >
+              <FontAwesomeIcon icon={faBoxOpen} />
+              <span>Manage Orders</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${
+                activeTab === "addProduct" ? "active" : ""
+              }`}
+              onClick={() => { 
+                handleActiveTab("addProduct");
+                InitAddForm();
+          }}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              <span>Add Product</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${activeTab === "addFaq" ? "active" : ""}`}
+              onClick={() => handleActiveTab("addFaq")}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              <span>Add Faqs</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${activeTab === "faq" ? "active" : ""}`}
+              onClick={() => handleActiveTab("faq")}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              <span>FAQs</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${
+                activeTab === "manageCustomers" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("manageCustomers")}
+            >
+              <FontAwesomeIcon icon={faUser} />
+              <span>Manage Users</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${
+                activeTab === "settings" ? "active" : ""
+              }`}
+              onClick={() => {
+                setActiveTab("settings");
+                initializeFormData();
+              }}
+            >
+              <FontAwesomeIcon icon={faCog} />
+              <span>Edit Profile</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/logout" className="menu-item">
+              <FontAwesomeIcon icon={faSignOutAlt} />
+              <span>Logout</span>
+            </Link>
+          </li>
+        </ul>
+        <div className="user-profile">
+          <FontAwesomeIcon icon={faUser} />
+          <span>{details ? details.UserName : "Loading..."}</span>
+        </div>
+      </nav>
+      <main className="main">{renderContent()}</main>
+    </div>
+  );
 }
 
 export default AdminDashboard;
