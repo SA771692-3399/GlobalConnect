@@ -9,6 +9,20 @@ import axios from "axios";
 function ForgetPassword() {
   const [email, setEmail] = useState("");
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/forgot-password",
+        { email }
+      );
+      toast.success(response.data);
+    } catch (error) {
+      console.error("Error:", error.response.data);
+      toast.error(error.response.data);
+    }
+  };
+
   return (
     <div className="forget-password-container">
       <ToastContainer />
