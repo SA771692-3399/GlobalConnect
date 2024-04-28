@@ -160,6 +160,285 @@ const handleEditOrderStatus = (orderId) => {
      notifyError("Failed to fetch data");
    }
  };}
+ case "orders":
+    return (
+      <div className="orders-container">
+      <h2>Orders</h2>
+      {selectedOrder ? (
+        <>
+          <button className="back-arrow-btn" onClick={() => setSelectedOrder(null)}>
+            <FontAwesomeIcon icon={faArrowLeft} />
+          </button>
+          <div className="product-details">
+            {orders.map((order) =>
+              order._id === selectedOrder && (
+                <div key={order._id} className="order-item selectedOrder">
+                  <div className="products">
+                    <ul>
+                      <h3> {editingOrder === order._id ? (
+                  <select
+                    value={orderStatus}
+                    onChange={(e) => setOrderStatus(e.target.value === "" ? order.deliveryStatus : e.target.value)}
+                  >
+                    {orderStatusOptions.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                ) : (
+                  order.deliveryStatus
+                )}
+                <span style={{float:"right"}}> {editingOrder === order._id ? (
+                  <button onClick={() => handleSaveOrderStatus(order._id)}>
+                    Save
+                  </button>
+                ) : (
+                  <button onClick={() => handleEditOrderStatus(order._id)} disabled={order.deliveryStatus === "Refunded"}>
+                    Edit
+                  </button>
+                )}
+                {order.deliveryStatus === "Refunded" && (
+                  <p style={{color:"red",fontSize:"x-small"}}>Refunded successfully</p>
+                )}</span></h3>
+                      <p>{`Delivery Expected: ${formatDate(order.deliveryDate)}`}</p>
+                      <p style={{ color: "red", fontSize: "x-small" }}>
+                      {editingOrder === order._id ? (
+                  <textarea
+                    value={order.comments}
+                    onChange={(e) => setOrderComments(e.target.value)}
+                  />
+                ) : (
+                  order.comments
+                )}
+                      </p>
+
+                      {order.productsOrdered.map((product) => {
+                        const productDetails = products.find((p) => p._id === product.productID);
+                        return (
+                          <li key={product._id} className="product-items">
+                            {productDetails && (
+                              <>
+                                <img
+                                  src={`http://localhost:8000/${productDetails.image}`}
+                                  alt={productDetails.name}
+                                  className="productImage"
+                                  width="100px"
+                                />
+                                <div>
+                                  <p>{productDetails.name}</p>
+                                  <p>{productDetails.price}</p>
+                                  <p>Quantity: {product.orderedQuantity}</p>
+                                </div>
+                              </>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  <div className="order-details">
+                    <p>{`Order# ${order._id} (${order.productsOrdered.length} Items)`}</p>
+                    <p>{`Order placed on ${formatDate(order.orderDate)}`}</p>
+                    <p>{`Paid by ${order.payment_method_types}`}</p>
+                    <hr />
+                    <h3>{`Order Payment Details`}</h3>
+                    <hr />
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td>Order Amount</td>
+                          <td>{`$${order.amount_subtotal / 100}`}</td>
+                        </tr>
+                        <tr>
+                          <td>Order Savings</td>
+                          <td>{`$${0}`}</td>
+                        </tr>
+                        <tr>
+                          <td>Coupon savings</td>
+                          <td>{`$${0}`}</td>
+                        </tr>
+                        <tr>
+                          <td>Convenience Fee</td>
+                          <td>{`$${0}`}</td>
+                        </tr>
+                        <tr>
+                          <td>Order Total</td>
+                          <td>{`$${order.amount_subtotal / 100}`}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <hr />
+                    <h4>{`Deliver to`}</h4>
+                    <p>
+                      <strong>{order.customer_details.name}</strong>
+                    </p>
+                    <p>
+                      {order.customer_details.address.line1}
+                      <br />
+                      {order.customer_details.address.line2}
+                      <br />
+                      {order.customer_details.address.city}, {order.customer_details.address.state}
+                      <br />
+                      {order.customer_details.address.country} -{" "}
+                      {order.customer_details.address.postal_code}
+                    </p>
+                    <p>
+                      <strong>{order.customer_details.phone}</strong>
+                    </p>
+                    <p>
+                      <strong>{order.customer_details.email}</strong>
+                    </p>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        </>
+      ) : (
+        <div>
+          {orders && orders.length > 0 ? (
+            orders.map((order) => (
+              <div key={order._id} className="order-item">
+                <p>
+                  <strong>Order id:</strong> {order._id}
+                </p>
+                <div className="products">
+                  <ul>
+                    {order.productsOrdered.map((product) => {
+                      const productDetails = products.find((p) => p._id === product.productID);
+                      return (
+                        <li
+                          key={product._id}
+                          className="product-items"
+                          onClick={() => handleProductClick(order._id)}
+                        >
+                          {productDetails && (
+                            <>
+                              <img
+                                src={`http://localhost:8000/${productDetails.image}`}
+                                alt={productDetails.name}
+                                className="productImage"
+                                width="100px"
+                              />
+                              <div>
+                                <p>{order.deliveryStatus}</p>
+                                <p>{`Delivery Expected: ${formatDate(order.deliveryDate)}`}</p>
+                                <p style={{ color: "red", fontSize: "x-small"}}>
+                                 <br/> {order.comments ? order.comments : ""}
+                                </p>
+                              </div>
+                            </>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            ))
+          ) : (
+            <li>No orders found</li>
+          )}
+        </div>
+      )}
+    </div>
+      // <div>
+      //   <h1>Orders</h1>
+      //   <table>
+      //     <thead>
+      //       <tr>
+      //         <th>Order ID</th>
+      //         <th>Customer Details</th>
+      //         <th>Product Details</th>
+      //         <th>Total</th>
+      //         <th>Payment Status</th>
+      //         <th>Order Status</th>
+      //         <th>Comments</th>
+      //         <th>Actions</th>
+      //       </tr>
+      //     </thead>
+      //     <tbody>
+      //       {orders.map(order => (
+      //         <tr key={order._id}>
+      //           <td>{order._id}</td>
+      //           <td>
+      //               <p><strong>{order.customer_details.name}</strong></p>
+      //               <p>{order.customer_details.address.line1}<br />
+      //               {order.customer_details.address.line2}<br />
+      //               {order.customer_details.address.city}, {order.customer_details.address.state}<br />
+      //               {order.customer_details.address.country} - {order.customer_details.address.postal_code}</p>
+      //               <p><strong>{order.customer_details.phone}</strong></p>
+      //               <p><strong>{order.customer_details.email}</strong></p>
+      //             </td>
+      //             <td>
+      //             {order.productsOrdered.map(product => {
+      //               const productDetails = products.find(p => p._id === product.productID);
+      //               return (
+      //                 <div key={product._id}>
+      //                   {productDetails && (
+      //                     <>
+      //                       <img
+      //                         src={`http://localhost:8000/${productDetails.image}`}
+      //                         alt={productDetails.name}
+      //                         className="productImage"
+      //                         width="100px"
+      //                       />
+      //                       <div>
+      //                         <p>{productDetails.name}</p>
+      //                         <p>${productDetails.price}</p>
+      //                         <p>Quantity: {product.orderedQuantity}</p>
+      //                       </div>
+      //                     </>
+      //                   )}
+      //                 </div>
+      //               );
+      //             })}
+      //         </td>
+      //           <td>${order.amount_subtotal/100}</td>
+      //           <td>{order.payment_status}</td>
+      //           <td>
+      //             {editingOrder === order._id ? (
+      //             <select
+      //               value={orderStatus}
+      //               onChange={(e) => setOrderStatus(e.target.value === "" ? order.deliveryStatus : e.target.value)}
+      //             >
+      //               {orderStatusOptions.map((option) => (
+      //                 <option key={option} value={option}>{option}</option>
+      //               ))}
+      //             </select>
+      //           ) : (
+      //             order.deliveryStatus
+      //           )}
+      //         </td>
+      //         <td>
+      //           {editingOrder === order._id ? (
+      //             <textarea
+      //               value={order.comments}
+      //               onChange={(e) => setOrderComments(e.target.value)}
+      //             />
+      //           ) : (
+      //             order.comments
+      //           )}
+      //         </td>
+      //         <td>
+      //           {editingOrder === order._id ? (
+      //             <button onClick={() => handleSaveOrderStatus(order._id)}>
+      //               Save
+      //             </button>
+      //           ) : (
+      //             <button onClick={() => handleEditOrderStatus(order._id)} disabled={order.deliveryStatus === "Refunded"}>
+      //               Edit
+      //             </button>
+      //           )}
+      //           {order.deliveryStatus === "Refunded" && (
+      //             <p style={{color:"red",fontSize:"x-small"}}>Refunded successfully</p>
+      //           )}
+      //         </td>
+      //         </tr>
+      //       ))}
+      //     </tbody>
+      //   </table>
+      // </div>
+    );
 
   
  return (
