@@ -157,3 +157,242 @@
     margin-right: -10%;
     /* Maintain aspect ratio */
   }
+
+  .imgs img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    box-shadow: 0 4px 6px rgba(238, 241, 243, 0.1);
+    /* Adjust shadow as needed */
+    animation: rotateDiamond 5s linear infinite;
+    /* Adjust animation duration and timing as needed */
+  }
+  
+  @keyframes rotateDiamond {
+    0% {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+  
+    25% {
+      clip-path: polygon(100% 50%, 50% 100%, 0% 50%, 50% 0%);
+    }
+  
+    50% {
+      clip-path: polygon(50% 100%, 0% 50%, 50% 0%, 100% 50%);
+    }
+  
+    75% {
+      clip-path: polygon(0% 50%, 50% 0%, 100% 50%, 50% 100%);
+    }
+  
+    100% {
+      clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    }
+  }
+  
+  .heroItem {
+    padding-top: 20%;
+  }
+  
+  .heroMain {
+    width: 100%;
+    height: auto;
+    background: #071019;
+    margin-top: 3rem;
+  }
+  
+  .heroTextOne {
+    font-size: 30px;
+    font-weight: bolder;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1s ease-in-out forwards;
+  }
+  
+  .heroTextTwo {
+    font-size: 30px;
+    font-weight: bolder;
+    color: #2fc6d9;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1s ease-in-out 0.5s forwards;
+  }
+  
+  .heroTextThree {
+    font-size: 16px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1s ease-in-out 1s forwards;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .ourservice {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .aboutText {
+    width: 50%;
+    margin-right: 6rem;
+    text-align: justify;
+    /* Use text-align instead of text-justify */
+  }
+  
+  /* ========================================================================================= */
+  /* Default styles */
+  /* Extra small devices (phones, 0px to 575px) */
+  @media only screen and (min-width: 0px) and (max-width: 575px) {
+  
+    .headText {
+      margin-top: 120%;
+    }
+  
+    .heroMain {
+      width: 100%;
+      height: auto;
+      background: #071019;
+      margin-top: 5rem;
+    }
+  
+    .ourservice {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .aboutText {
+      width: auto;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      margin-right: 0rem;
+      text-align: justify;
+      /* Use text-align instead of text-justify */
+    }
+  
+    .btn-lgs {
+      transition: color 0.3s;
+      background: white;
+      color: #7e5888;
+    }
+  
+    .btn-lgs:hover {
+      color: white;
+      background: #7e5888;
+    }
+  
+    .plr {
+      padding-left: 2%;
+    }
+  
+    .flex-res {
+      flex-direction: column-reverse;
+      background: #071019;
+    }
+  
+    .imgs {
+      width: 300px;
+      /* Adjust width as needed */
+      max-width: 300px;
+      /* Maximum width */
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
+      aspect-ratio: 1/1;
+  
+      /* Maintain aspect ratio */
+    }
+  
+    .session1 {
+      width: 100%;
+      margin: 0px;
+      height: auto;
+      text-align: center;
+      margin-top: -20%;
+  
+    }
+  
+    .heroTextOne {
+      font-size: 20px;
+      font-weight: bolder;
+    }
+  
+    .heroTextTwo {
+      font-size: 20px;
+      font-weight: bolder;
+    }
+  
+    .heroTextThree {
+      font-size: 12px;
+    }
+  
+    .topnavbg {
+  
+      margin-bottom: 0px;
+  
+    }
+  
+    .mainLogo {
+      width: 5rem;
+      margin-left: 10px;
+  
+    }
+  
+    #linkID {
+      color: black;
+      margin-left: 1rem;
+    }
+  }
+  @media only screen and (min-width: 275px) and (max-width: 375px) {
+    .headText {
+      margin-top: 150%;
+    }
+  }
+  @media only screen and (min-width: 376px) and (max-width: 465px) {
+    .headText {
+      margin-top: 170%;
+    }
+  }
+  @media only screen and (min-width: 466px) and (max-width: 575px) {
+    .headText {
+      margin-top: 170%;
+    }
+  }
+  /* Small devices (landscape phones, 576px to 767px) */
+  @media only screen and (min-width: 576px) and (max-width: 767px) {
+    .heroMain {
+      width: 100%;
+      height: auto;
+      background: #071019;
+      margin-top: 5rem;
+    }
+    .headText {
+      margin-top: 170%;
+    }
+    .plr {
+      padding-left: 2%;
+    }
+  
+    .flex-res {
+      flex-direction: column-reverse;
+      background: #071019;
+      width: 100%;
+    }
+  
+    .imgs {
+      width: 300px;
+      /* Adjust width as needed */
+      
