@@ -1,0 +1,115 @@
+.checkout-container {
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.checkout-container .checkout-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.checkout-container .cart-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.checkout-container .cart-item {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-container .cart-item:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.checkout-container .product-name {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.checkout-container .product-price {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.checkout-container .product-quantity {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.checkout-container .product-image {
+  width: 30%;
+  height: 100px;
+}
+
+.checkout-container .cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+text-align: center;
+}
+
+.checkout-container .cart-table thead {
+  text-align: center;
+}
+
+.checkout-container .cart-table th,
+.checkout-container .cart-table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.checkout-container .cart-table td {
+  vertical-align: middle;
+}
+
+.checkout-container .cart-table tfoot {
+  border-top: 2px solid #333333;
+}
+
+.checkout-container .checkout-button,
+.checkout-container .continue-shopping-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #7e5888;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.checkout-container .checkout-button:hover,
+.checkout-container .continue-shopping-button:hover {
+  background-color: #7e5888;
+}
+
+.checkout-container .continue-shopping-button {
+  margin-right: 10px;
+}
+
+.checkout-container .buttons{
+  display: flex;
+  justify-content: space-between;
+position: absolute;
+  bottom: 0;
+  width: 80%;
+}
+
+.checkout-container .quantityChange{
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: space-evenly;
+}
+.checkout-container .quantityChange button{
+  border: 2px solid #7e5888;
+  background-color: #7e5888;
+  color: white;
+}
