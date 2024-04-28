@@ -70,7 +70,91 @@ export default function AddProductAdmin({handleSubmit,formData,handleInputChange
                )}
              </div>
  
-            
+             <div>
+               <label htmlFor="sizeProduct">
+                 {formData.category === "Local business"
+                   ? "Tray Size"
+                   : "Product Size"}
+               </label>
+               <select
+                 id="sizeProduct"
+                 name="sizeProduct"
+                 value={formData.sizeProduct}
+                 onChange={handleInputChange}
+                 required
+               >
+                 <option value="">
+                   Select a{" "}
+                   {formData.category === "Local business"
+                     ? "Tray Size"
+                     : "Product Size"}
+                 </option>
+                 {formData.category === "Local business" ? (
+                   <>
+                     <option value="Small">Small</option>
+                     <option value="Medium">Medium</option>
+                     <option value="Large">Large</option>
+                   </>
+                 ) : (
+                   <>
+                     <option value="sm">sm</option>
+                     <option value="md">md</option>
+                     <option value="lg">lg</option>
+                     <option value="xl">xl</option>
+                     <option value="2xl">2xl</option>
+                     {/* Note: Changed "Pink" to lowercase */}
+                   </>
+                 )}
+               </select>
+             </div>
+             <div>
+               <label htmlFor="productDescription">Product Description:</label>
+               <textarea
+                 id="productDescription"
+                 name="description"
+                 value={formData.description}
+                 onChange={handleInputChange}
+                 required
+               ></textarea>
+             </div>
+             <div>
+               <label htmlFor="productQuantity">Quantity:</label>
+               <input
+                 type="number"
+                 id="productQuantity"
+                 name="quantity"
+                 value={formData.quantity}
+                 onChange={handleInputChange}
+                 required
+               />
+             </div>
+             <div>
+               <label htmlFor="productImage">Upload Image:</label>
+               <input
+                 type="file"
+                 id="productImage"
+                 name="image"
+                 onChange={handleInputChange}
+                 required={formData.image ? false : true}
+               />
+             </div>
+             {formData.image && (
+               <img
+                 src={
+                   formData.image && typeof formData.image === "object"
+                     ? URL.createObjectURL(formData.image)
+                     : `http://localhost:8000/${formData.image}`
+                 }
+                 alt="Selected"
+                 style={{ width: "100px", height: "100px" }}
+               />
+             )}
+             <button type="submit">
+               {formData.name ? "Update Product" : "Add Product"}
+             </button>
+           </form>
+         </div>
+   </div>
  )
 }
  
