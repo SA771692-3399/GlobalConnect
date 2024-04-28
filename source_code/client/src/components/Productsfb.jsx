@@ -39,7 +39,68 @@ function Productfb() {
  };
  
  return (
-   
+   <>
+     <Topnav />
+     <MainNav />
+ 
+     <div className="registration-form" style={{ backgroundImage: 'url("https://media.istockphoto.com/id/1454649439/photo/kadhi-samosa-chaat.webp?b=1&s=170667a&w=0&k=20&c=7TWSZJPfi5Cz8YuGG554RHbrWKsuz9Ihf-FCvt7_TcQ=")', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+       <ToastContainer />
+ 
+       <form onSubmit={handleSubmit} className="mt-5">
+         <div className="register-logo" style={{ width: '100%', background: "#7e5888", display: "flex", justifyContent: "center" }}>
+           <img src={logo} alt="Company Logo" style={{ width: '10rem', height: "8rem" }} />
+         </div>
+ 
+         <div className="form-group" style={{ marginTop: "1rem" }}>
+           <label>Username:</label>
+           <input
+             type="text"
+             className="form-control item remove-border-css"
+             value={username}
+             onChange={(e) => setUsername(e.target.value)}
+             placeholder="Enter Your Username"
+             required
+             disabled={true}
+             style={{ color: "black" }}
+           />
+         </div>
+         <div className="form-group">
+         <label>Star Rating for product:</label>
+           <select
+             type="number"
+             className="form-control item"
+             value={rating}
+             onChange={(e) => setRating(e.target.value)}
+             required
+           >
+             
+             <option value="1">1</option>
+             <option value="2">2</option>
+             <option value="3">3</option>
+             <option value="4">4</option>
+             <option value="5">5</option>
+           </select>
+         </div>
+         <div className="form-group">
+           <label>Provide Feedback:</label>
+           <textarea
+             placeholder="Enter Feedback"
+             className="form-control item"
+             value={des}
+             onChange={(e) => setDes(e.target.value)}
+             required
+           />
+         </div>
+ 
+         <div className="form-group">
+           <button type="submit" className="btn btn-block create-account" style={{ background: "#7e5888" }}>
+             Send Feedback
+           </button>
+         </div>
+       </form>
+     </div>
+     <Footer />
+   </>
  );
 }
  
