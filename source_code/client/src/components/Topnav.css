@@ -395,4 +395,97 @@
     .imgs {
       width: 300px;
       /* Adjust width as needed */
-      
+      max-width: 300px;
+    /* Maximum width */
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    aspect-ratio: 1/1;
+
+    /* Maintain aspect ratio */
+  }
+  .session1 {
+    width: 100%;
+    margin: 0px;
+    height: auto;
+    text-align: center;
+    background: #071019;
+    margin-top: -20%;
+
+  }
+
+  .heroTextOne {
+    font-size: 20px;
+    font-weight: bolder;
+  }
+
+  .heroTextTwo {
+    font-size: 20px;
+    font-weight: bolder;
+  }
+
+  .heroTextThree {
+    font-size: 12px;
+  }
+
+}
+
+/* Medium devices (tablets, 768px to 991px) */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .headText {
+    margin-top:110%;
+  }
+  /* CSS rules for medium screens */
+  .plr {
+    padding-left: 2%;
+  }
+
+  .session1 {
+    width: 100%;
+    margin: 0px;
+    height: auto;
+    text-align: center;
+    margin-top: -20%;
+
+  }
+
+  .flex-res {
+    flex-direction: column-reverse;
+    background: #071019;
+  }
+
+  .imgs {
+    width: 600px;
+    /* Adjust width as needed */
+    max-width: 600px;
+    /* Maximum width */
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    aspect-ratio: 1/1;
+
+    /* Maintain aspect ratio */
+  }
+}
+
+/* Large devices (desktops, 992px to 1199px) */
+@media only screen and (min-width: 992px) and (max-width: 1020px) {
+  .headText {
+    margin-top:100%;
+  }
+  /* CSS rules for large screens */
+}
+
+/* Large devices (desktops, 992px to 1199px) */
+@media only screen and (min-width: 1021px) and (max-width: 1199px) {
+  .headText {
+    margin-top:100%;
+  }
+  /* CSS rules for large screens */
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  /* CSS rules for extra large screens */
+}
+
