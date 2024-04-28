@@ -1,550 +1,564 @@
-import React, { useState, useEffect } from "react"; 
+import React, { useState, useEffect } from "react";
 
-import { Link, useNavigate, useSearchParams } from "react-router-dom"; 
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
-import logo from "../assets/GlobalConnect.png"; 
+import logo from "../assets/GlobalConnect.png";
 
-import axios from "axios"; 
+import axios from "axios";
 
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS 
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 
-import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Import Bootstrap JavaScript 
+import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Import Bootstrap JavaScript
 
- 
+import "../styles/Profile.css";
 
-import "../styles/Profile.css"; 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 
-import { faShoppingCart } from "@fortawesome/free-solid-svg-icons"; 
+import ProfilePage from "./ProfilePage";
 
-import ProfilePage from "./ProfilePage"; 
+import { ToastContainer, toast } from "react-toastify";
 
-import { ToastContainer, toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
 
-import "react-toastify/dist/ReactToastify.css"; 
+import OrdersList from "./OrdersList";
 
-import OrdersList from "./OrdersList"; 
+import LocalCata from "./LocalCata";
 
-import LocalCata from "./LocalCata"; 
+import UserD from "./UserD";
 
-import UserD from "./UserD"; 
+import ProductDes from "./ProductDes";
 
-import ProductDes from "./ProductDes"; 
+import WishList from "./WishList";
 
-import WishList from "./WishList"; 
+import { RiMenuFill } from "react-icons/ri";
 
-import { RiMenuFill } from "react-icons/ri"; 
+function Profile() {
+  const [products, setProducts] = useState([]);
 
- 
+  const [displayOrdersList, setDisplayOrdersList] = useState(false);
 
-function Profile() { 
+  const [details, setDetails] = useState({});
 
-  const [products, setProducts] = useState([]); 
+  const [displayProfilePage, setDisplayProfilePage] = useState(false);
 
-  const [displayOrdersList, setDisplayOrdersList] = useState(false); 
+  const [displayWishPage, setDisplayWishPage] = useState(false);
 
-  const [details, setDetails] = useState({}); 
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-  const [displayProfilePage, setDisplayProfilePage] = useState(false); 
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const [displayWishPage, setDisplayWishPage] = useState(false); 
+  const [cart, setCart] = useState({});
 
-  const [selectedCategory, setSelectedCategory] = useState(""); 
+  const navigate = useNavigate();
 
-  const [selectedProduct, setSelectedProduct] = useState(null); 
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [cart, setCart] = useState({}); 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
 
-  const navigate = useNavigate(); 
+        if (!token) throw new Error("No token found");
 
-  const [searchParams, setSearchParams] = useSearchParams(); 
+        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
- 
+        try {
+          await axios.get("http://localhost:8000/check-auth");
+        } catch (e) {
+          console.log(e);
 
-   
+          alert("session expired");
 
- 
+          navigate("/login");
+        }
 
-  useEffect(() => { 
+        const userDetailsRes = await axios.get(
+          "http://localhost:8000/api/userDetails"
+        );
 
-    const fetchData = async () => { 
+        setDetails(userDetailsRes.data.User);
 
-      try { 
+        const productsRes = await axios.get(
+          "http://localhost:8000/api/products"
+        );
 
-        const token = localStorage.getItem("token"); 
+        setProducts(productsRes.data.products);
 
-        if (!token) throw new Error("No token found"); 
+        const cartRes = await axios.get("http://localhost:8000/user/cart");
 
-        axios.defaults.headers.common["Authorization"] = "Bearer " + token; 
+        if (cartRes.data.products) {
+          const prodJSON = {};
 
-        try { 
+          cartRes.data.products.forEach((c) => {
+            prodJSON[c.productID] = {
+              quantity: c.quantity,
 
-          await axios.get("http://localhost:8000/check-auth"); 
+              size: c.size,
+            };
+          });
 
-        } catch (e) { 
+          setCart(prodJSON);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    };
 
-          console.log(e); 
+    fetchData();
 
-          alert("session expired"); 
+    let sessionID = searchParams.get("session_id");
 
-          navigate("/login"); 
+    if (sessionID) {
+      (async () => {
+        const res = await axios.get(
+          `http://localhost:8000/user/session-status?session_id=${sessionID}`
+        );
 
-        } 
+        if (res.data.status === "open") {
+          navigate("/checkout");
+        }
 
- 
+        if (res.data.status === "complete") {
+          alert(
+            `We appreciate your business! A confirmation email will be sent to ${res.data.customer_email}. If you have any questions, please email to us.`
+          );
 
-        const userDetailsRes = await axios.get( 
+          await axios.delete("http://localhost:8000/user/cart");
 
-          "http://localhost:8000/api/userDetails" 
+          searchParams.delete("session_id");
 
-        ); 
+          setSearchParams(searchParams);
+        }
+      })();
+    }
+  }, []);
 
-        setDetails(userDetailsRes.data.User); 
+  const sendPostRequestCart = async (cart) => {
+    let productFlag = true;
 
- 
+    const productsArray = Object.entries(cart).map((p) => {
+      if (p[0] === undefined || p[1] === undefined) {
+        productFlag = false;
+      }
 
-        const productsRes = await axios.get( 
+      return { productID: p[0], size: p[1]?.size, quantity: p[1]?.quantity };
+    });
 
-          "http://localhost:8000/api/products" 
+    if (productFlag) {
+      await axios.post("http://localhost:8000/user/cart", {
+        products: productsArray,
+      });
+    }
+  };
 
-        ); 
+  const handleProfileClick = () => {
+    setDisplayProfilePage(!displayProfilePage);
 
-        setProducts(productsRes.data.products); 
+    setDisplayOrdersList(false);
+  };
 
- 
+  const handleOrdersClick = () => {
+    setDisplayOrdersList(!displayOrdersList);
 
-        const cartRes = await axios.get("http://localhost:8000/user/cart"); 
+    setDisplayProfilePage(false);
+  };
 
-        if (cartRes.data.products) { 
+  const handleWishClick = () => {
+    setDisplayWishPage(!displayWishPage);
 
-          const prodJSON = {}; 
+    setDisplayProfilePage(false);
+  };
 
-          cartRes.data.products.forEach((c) => { 
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
 
-            prodJSON[c.productID] = { 
+    console.log("Selected product category:", category); // Assuming category has a 'name' property
 
-              quantity: c.quantity, 
+    if (category === "Local business") {
+      // Redirect or render LocalCata component here
 
-              size: c.size, 
+      return <LocalCata />;
+    }
+  };
 
-            }; 
+  const handleBackToProducts = () => {
+    setSelectedProduct(null);
+  };
 
-          }); 
+  const handleProductClick = (product) => {
+    setDisplayOrdersList(false);
 
-          setCart(prodJSON); 
+    setDisplayProfilePage(false);
 
-        } 
+    if (!selectedProduct) {
+      setSelectedProduct(product);
+    }
+  };
 
-      } catch (error) { 
+  const addToCart = async (productId, productName, size) => {
+    if (cart[productId]) {
+      toast.error(`${productName} is already in the cart!`, {
+        position: "bottom-center",
 
-        console.error("Error fetching data:", error.message); 
+        autoClose: 3000,
 
-      } 
+        hideProgressBar: false,
 
-    }; 
+        closeOnClick: true,
 
-    fetchData(); 
+        pauseOnHover: true,
 
-    let sessionID = searchParams.get("session_id"); 
+        draggable: true,
 
-    if (sessionID) { 
+        progress: undefined,
+      });
+    } else {
+      setCart((prevCart) => {
+        const updatedCart = { ...prevCart };
 
-      (async () => { 
+        updatedCart[productId] = {
+          size: size,
 
-        const res = await axios.get( 
+          quantity: (updatedCart?.[productId]?.quantity || 0) + 1,
+        };
 
-          `http://localhost:8000/user/session-status?session_id=${sessionID}` 
+        sendPostRequestCart(updatedCart);
 
-        ); 
+        return updatedCart;
+      });
 
- 
+      toast.success(`${productName} added to cart!`, {
+        position: "bottom-center",
 
-        if (res.data.status === "open") { 
+        autoClose: 3000,
 
-          navigate("/checkout"); 
+        hideProgressBar: false,
 
-        } 
+        closeOnClick: true,
 
- 
+        pauseOnHover: true,
 
-        if (res.data.status === "complete") { 
+        draggable: true,
 
-          alert( 
+        progress: undefined,
+      });
+    }
+  };
 
-            `We appreciate your business! A confirmation email will be sent to ${res.data.customer_email}. If you have any questions, please email to us.` 
+  const handleDashboardClick = () => {
+    // Refresh the page
 
-          ); 
+    window.location.reload();
+  };
 
-          await axios.delete("http://localhost:8000/user/cart"); 
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-          searchParams.delete("session_id"); 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
-          setSearchParams(searchParams); 
+  useEffect(() => {
+    // Close dropdown when clicking outside
 
-        } 
+    const handleOutsideClick = (event) => {
+      if (dropdownOpen && !event.target.closest(".dropdown")) {
+        setDropdownOpen(false);
+      }
+    };
 
-      })(); 
+    document.addEventListener("mousedown", handleOutsideClick);
 
-    } 
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [dropdownOpen]);
 
-  }, []); 
+  const getTotalItemsInCart = () => {
+    return Object.keys(cart).length;
+  };
 
- 
+  const handleCartClick = () => {
+    if (Object.keys(cart).length !== 0) {
+      navigate("/checkout", { state: { cart } });
+    } else {
+      toast.error(`cart is empty. Add some item to proceed`, {
+        position: "bottom-center",
 
-  const sendPostRequestCart = async (cart) => { 
+        autoClose: 3000,
 
-    let productFlag = true; 
+        hideProgressBar: false,
 
-    const productsArray = Object.entries(cart).map((p) => { 
+        closeOnClick: true,
 
-      if (p[0] === undefined || p[1] === undefined) { 
+        pauseOnHover: true,
 
-        productFlag = false; 
+        draggable: true,
 
-      } 
+        progress: undefined,
+      });
+    }
+  };
 
-      return { productID: p[0], size: p[1]?.size, quantity: p[1]?.quantity }; 
+  const addToWishList = async (productId, productName) => {
+    if (cart[productId]) {
+      toast.error(`${productName} is already in the cart!`, {
+        position: "bottom-center",
 
-    }); 
+        autoClose: 3000,
 
-    if (productFlag) { 
+        hideProgressBar: false,
 
-      await axios.post("http://localhost:8000/user/cart", { 
+        closeOnClick: true,
 
-        products: productsArray, 
+        pauseOnHover: true,
 
-      }); 
+        draggable: true,
 
-    } 
+        progress: undefined,
+      });
+    } else {
+      setCart((prevCart) => {
+        const updatedCart = { ...prevCart };
 
-  }; 
+        updatedCart[productId] = (updatedCart[productId] || 0) + 1;
 
- 
+        sendPostRequestCart(updatedCart);
 
-  const handleProfileClick = () => { 
+        return updatedCart;
+      });
 
-    setDisplayProfilePage(!displayProfilePage); 
+      toast.success(`${productName} added to cart!`, {
+        position: "bottom-center",
 
-    setDisplayOrdersList(false); 
+        autoClose: 3000,
 
-  }; 
+        hideProgressBar: false,
 
- 
+        closeOnClick: true,
 
-  const handleOrdersClick = () => { 
+        pauseOnHover: true,
 
-    setDisplayOrdersList(!displayOrdersList); 
+        draggable: true,
 
-    setDisplayProfilePage(false); 
+        progress: undefined,
+      });
+    }
+  };
 
-  }; 
+  useEffect(() => {
+    // Close dropdown when clicking outside
 
- 
+    const handleOutsideClick = (event) => {
+      if (dropdownOpen && !event.target.closest(".dropdown")) {
+        setDropdownOpen(false);
+      }
+    };
 
-  const handleWishClick = () => { 
+    document.addEventListener("mousedown", handleOutsideClick);
 
-    setDisplayWishPage(!displayWishPage); 
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [dropdownOpen]);
 
-    setDisplayProfilePage(false); 
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category === selectedCategory)
+    : products;
 
-  }; 
+  return (
+    <div className="profile-container">
+      <header className="profile-header">
+        <div className="logo-container">
+          <Link
+            className="logo-link"
+            onClick={() => {
+              setDisplayOrdersList(false);
 
- 
+              setDisplayProfilePage(false);
+            }}
+          >
+            <img
+              src={logo}
+              alt="Company Logo"
+              style={{
+                width: "6rem",
 
-  const handleCategoryClick = (category) => { 
+                marginTop: "-1rem",
 
-    setSelectedCategory(category); 
+                marginBottom: "-1rem",
+              }}
+            />
+          </Link>
+        </div>
 
-    console.log("Selected product category:", category); // Assuming category has a 'name' property 
+        <div>
+          <div className="cart-info" onClick={handleCartClick}>
+            <FontAwesomeIcon icon={faShoppingCart} />
 
-    if (category === "Local business") { 
+            <div className="cart-count"> {getTotalItemsInCart()}</div>
+          </div>
+        </div>
 
-      // Redirect or render LocalCata component here 
-
-      return <LocalCata />; 
-
-    } 
-
-  }; 
-
- 
-
-  const handleBackToProducts = () => { 
-
-    setSelectedProduct(null); 
-
-  }; 
-
- 
-
-  const handleProductClick = (product) => { 
-
-    setDisplayOrdersList(false); 
-
-    setDisplayProfilePage(false); 
-
-    if (!selectedProduct) { 
-
-      setSelectedProduct(product); 
-
-    } 
-
-  }; 
-
- 
-
-  const addToCart = async (productId, productName, size) => { 
-
-    if (cart[productId]) { 
-
-      toast.error(`${productName} is already in the cart!`, { 
-
-        position: "bottom-center", 
-
-        autoClose: 3000, 
-
-        hideProgressBar: false, 
-
-        closeOnClick: true, 
-
-        pauseOnHover: true, 
-
-        draggable: true, 
-
-        progress: undefined, 
-
-      }); 
-
-    } else { 
-
-      setCart((prevCart) => { 
-
-        const updatedCart = { ...prevCart }; 
-
-        updatedCart[productId] = { 
-
-          size: size, 
-
-          quantity: (updatedCart?.[productId]?.quantity || 0) + 1 
-
-        }; 
-
-        sendPostRequestCart(updatedCart); 
-
-        return updatedCart; 
-
-      }); 
-
- 
-
-      toast.success(`${productName} added to cart!`, { 
-
-        position: "bottom-center", 
-
-        autoClose: 3000, 
-
-        hideProgressBar: false, 
-
-        closeOnClick: true, 
-
-        pauseOnHover: true, 
-
-        draggable: true, 
-
-        progress: undefined, 
-
-      }); 
-
-    } 
-
-  }; 
-
-  const handleDashboardClick = () => { 
-
-    // Refresh the page 
-
-    window.location.reload(); 
-
-  }; 
-
-  const [dropdownOpen, setDropdownOpen] = useState(false); 
-
- 
-
-  const toggleDropdown = () => { 
-
-    setDropdownOpen(!dropdownOpen); 
-
-  }; 
-
- 
-
-  useEffect(() => { 
-
-    // Close dropdown when clicking outside 
-
-    const handleOutsideClick = (event) => { 
-
-      if (dropdownOpen && !event.target.closest(".dropdown")) { 
-
-        setDropdownOpen(false); 
-
-      } 
-
-    }; 
-
- 
-
-    document.addEventListener("mousedown", handleOutsideClick); 
-
-    return () => { 
-
-      document.removeEventListener("mousedown", handleOutsideClick); 
-
-    }; 
-
-  }, [dropdownOpen]); 
-
-  const getTotalItemsInCart = () => { 
-
-    return Object.keys(cart).length; 
-
-  }; 
-
- 
-
-  const handleCartClick = () => { 
-
-    if (Object.keys(cart).length !== 0) { 
-
-      navigate("/checkout", { state: { cart } }); 
-
-    } else { 
-
-      toast.error(`cart is empty. Add some item to proceed`, { 
-
-        position: "bottom-center", 
-
-        autoClose: 3000, 
-
-        hideProgressBar: false, 
-
-        closeOnClick: true, 
-
-        pauseOnHover: true, 
-
-        draggable: true, 
-
-        progress: undefined, 
-
-      }); 
-
-    } 
-
-  }; 
-
- 
-
-  const addToWishList = async (productId, productName) => { 
-
-    if (cart[productId]) { 
-
-      toast.error(`${productName} is already in the cart!`, { 
-
-        position: "bottom-center", 
-
-        autoClose: 3000, 
-
-        hideProgressBar: false, 
-
-        closeOnClick: true, 
-
-        pauseOnHover: true, 
-
-        draggable: true, 
-
-        progress: undefined, 
-
-      }); 
-
-    } else { 
-
-      setCart((prevCart) => { 
-
-        const updatedCart = { ...prevCart }; 
-
-        updatedCart[productId] = (updatedCart[productId] || 0) + 1; 
-
-        sendPostRequestCart(updatedCart); 
-
-        return updatedCart; 
-
-      }); 
-
- 
-
-      toast.success(`${productName} added to cart!`, { 
-
-        position: "bottom-center", 
-
-        autoClose: 3000, 
-
-        hideProgressBar: false, 
-
-        closeOnClick: true, 
-
-        pauseOnHover: true, 
-
-        draggable: true, 
-
-        progress: undefined, 
-
-      }); 
-
-    } 
-
-  }; 
-
- 
-
-  useEffect(() => { 
-
-    // Close dropdown when clicking outside 
-
-    const handleOutsideClick = (event) => { 
-
-      if (dropdownOpen && !event.target.closest(".dropdown")) { 
-
-        setDropdownOpen(false); 
-
-      } 
-
-    }; 
-
- 
-
-    document.addEventListener("mousedown", handleOutsideClick); 
-
-    return () => { 
-
-      document.removeEventListener("mousedown", handleOutsideClick); 
-
-    }; 
-
-  }, [dropdownOpen]); 
-
- 
-
-
-  ); 
-
-} 
-
- 
-
-export default Profile; 
-
- 
-
- 
+        <div className="user-options">
+          <div className="dropdown" onClick={toggleDropdown}>
+            <button
+              className="btn btn-secondary dropdown-toggle d-flex align-items-center gap-2 border"
+              type="button"
+              id="dropdownMenuButton"
+              aria-haspopup="true"
+              aria-expanded={dropdownOpen ? "true" : "false"}
+            >
+              <RiMenuFill />
+              Home
+            </button>
+
+            <div
+              className={`dropdown-menu ${dropdownOpen ? "show" : ""}`}
+              aria-labelledby="dropdownMenuButton"
+            >
+              <Link className="dropdown-item" onClick={handleDashboardClick}>
+                Dashboard
+              </Link>
+
+              <Link className="dropdown-item" onClick={handleProfileClick}>
+                Profile
+              </Link>
+
+              <Link className="dropdown-item" onClick={handleOrdersClick}>
+                Orders
+              </Link>
+
+              <Link className="dropdown-item" onClick={handleWishClick}>
+                Wishlist
+              </Link>
+
+              <Link to="/logout" className="dropdown-item">
+                Logout
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <ToastContainer />
+
+      {displayOrdersList ? (
+        <OrdersList />
+      ) : displayProfilePage ? (
+        <ProfilePage />
+      ) : displayWishPage ? (
+        <WishList addToCart={addToCart} />
+      ) : (
+        <div
+          className="main-container"
+          style={{
+            height: "20rem",
+
+            margin: "0",
+
+            padding: "0",
+
+            marginTop: "-1.5rem",
+          }}
+        >
+          {!selectedProduct && (
+            <header>
+              <nav
+                id="sidebarMenu"
+                class="collapse d-lg-block sidebar collapse bg-white"
+              >
+                <div class="position-sticky">
+                  <div class="list-group list-group-flush mx-3 mt-4">
+                    <ul className="category-list">
+                      <li>
+                        <Link
+                          onClick={() => handleCategoryClick("")}
+                          class="list-group-item list-group-item-action py-2 ripple"
+                          aria-current="true"
+                        >
+                          Dashboard
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          onClick={() => handleCategoryClick("Clothing")}
+                          class="list-group-item list-group-item-action py-2 ripple"
+                          aria-current="true"
+                        >
+                          Clothing
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          onClick={() => handleCategoryClick("Food")}
+                          class="list-group-item list-group-item-action py-2 ripple"
+                          aria-current="true"
+                        >
+                          Food
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          onClick={() => handleCategoryClick("Local business")}
+                          class="list-group-item list-group-item-action py-2 ripple"
+                          aria-current="true"
+                        >
+                          Local Business
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </nav>
+            </header>
+          )}
+
+          <div className="products">
+            {selectedProduct ? (
+              <div div style={{ background: "white" }}>
+                <ProductDes
+                  handleBackToProducts={handleBackToProducts}
+                  selectedProduct={selectedProduct}
+                  addToCart={addToCart}
+                  selectedCategory={selectedCategory}
+                  filteredProducts={filteredProducts}
+                  handleProductClick={handleProductClick}
+                  addToWishList={addToWishList}
+                />
+              </div>
+            ) : (
+              <React.Fragment>
+                <div>
+                  {selectedCategory !== "Local business" ? (
+                    <UserD
+                      selectedCategory={selectedCategory}
+                      filteredProducts={filteredProducts}
+                      handleProductClick={handleProductClick}
+                      addToCart={addToCart}
+                      addToWishList={addToWishList}
+                    />
+                  ) : (
+                    <div>
+                      <LocalCata
+                        filteredProducts={filteredProducts}
+                        handleProductClick={handleProductClick}
+                        addToCart={addToCart}
+                      />
+                    </div>
+                  )}
+                </div>
+              </React.Fragment>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Profile;
