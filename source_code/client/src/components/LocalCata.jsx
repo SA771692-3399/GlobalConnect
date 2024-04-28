@@ -84,7 +84,77 @@ export default function LocalCata({
                    }}
                    onClick={() => handleProductClick(product)}
                  />
-                 <
+                 <div className="card-body">
+                   <div style={{ display: "inline-block" }}>
+                     <h5
+                       className="card-text"
+                       style={{ color: "gray", fontSize: "16px" }}
+                     >
+                       {product.name}{" "}
+                       <span
+                         style={{
+                           right: "0",
+                           position: "absolute",
+                           paddingRight: "10px",
+                           fontSize: "12px",
+                           color: "skyblue",
+                         }}
+                       >
+                         {product.category}
+                       </span>
+                     </h5>
+                     <p
+                       style={{
+                         display: "inline",
+                         right: "0",
+                         position: "absolute",
+                         paddingRight: "10px",
+                         marginTop: "-1rem",
+                       }}
+                     >
+                       ${product?.productPrices?.[0]?.price}{" "}
+                       <span style={{ color: "#7e5888", fontSize: "12px" }}>
+                         {product.sizeProduct} Size
+                       </span>
+                     </p>
+                     <h5
+                       className="card-text"
+                       style={{ color: "gray", fontSize: "16px" }}
+                     >
+                       <span
+                         style={{
+                           right: "0",
+                           position: "absolute",
+                           paddingRight: "10px",
+                           fontSize: "12px",
+                           marginTop: "10px",
+                         }}
+                       >
+                         {" "}
+                         {product.quantity} in Stock
+                       </span>
+                     </h5>
+                   </div>
+ 
+                   <div
+                     style={{
+                       display: "flex",
+                       justifyContent: "center",
+                       marginTop: "1rem",
+                     }}
+                   >
+                     <Link to={`/Productwish/${product._id}`}>
+                       <CiHeart size={25} color="#7e5888" />
+                     </Link>
+                   </div>
+                   <br />
+                   <div
+                     style={{
+                       display: "flex",
+                       justifyContent: "center",
+                       marginTop: "-1rem",
+                     }}
+                   >
                      <button
                        className="add-to-cart-btn"
                        onClick={() => addToCart(product._id, product.name)}
