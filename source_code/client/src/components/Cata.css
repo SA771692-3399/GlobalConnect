@@ -1,0 +1,117 @@
+.welcome-message .borderBtn {
+    position: absolute;
+    top: 300%;
+    left: 45%;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.05em;
+    color: white;
+    padding: 1.45em 3.35em;
+    border-radius: 0.25em;
+    background: rgba(195, 40, 40, 1);
+  }
+  
+  .borderBtn:hover {
+    color: white;
+    background-color: #363B3F;
+  }
+  
+  .container .btn-lg {
+    background: rgba(195, 40, 40, 1);
+    border: 0.05em solid rgba(195, 40, 40, .7);
+    color: white;
+  }
+  
+  .container .btn-lg:hover {
+    background: white;
+    border: 0.05em solid rgba(195, 40, 40, 1);
+    color: rgba(195, 40, 40, 1);
+  }
+  
+  .modal-body .form-control {
+    border-radius: 0.35em;
+    margin-right: 0.25em;
+    padding: 0.15em;
+  }
+  
+  .modal-body .form-group label {
+    margin-left: 0.35em;
+  }
+  
+  .modal-header {
+    background: rgba(195, 40, 40, 1);
+  }
+  
+  .modal-body .form-group {
+    text-align: left;
+  }
+  
+  .close {
+    color: white !important;
+    opacity: 0.8 !important;
+  }
+  
+  .mohe {
+    position: relative;
+    display: block;
+    color: white;
+    float: left;
+    padding: 0.75em;
+  }
+  
+  .mohe:after {
+    position: absolute;
+    content: "";
+    top: -1.45em;
+    bottom: -1.45em;
+    right: -7.15em;
+    border-left: 0.05em solid rgba(0, 0, 0, 0.2);
+    border-right: 0.05em solid rgba(255, 255, 255, 0.7);
+    transform: rotate(25deg);
+  }
+  
+  .modal-footer {
+    background: rgba(195, 40, 40, 1);
+  }
+  
+  .modal-footer button {
+    background: white;
+    color: black;
+    width: 9em;
+    border-radius: 0.35em;
+  }
+  
+  .input-group textarea {
+    height: 6.35em !important;
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+  .form-control {
+    height: 2em;
+    /* padding: 0.75em 1.15em; */
+    font-size: 1.15em;
+    border: 0.05em solid rgba(195, 40, 40, 1) !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: black;
+  }
+
+  .remove-border-css{
+    border: none !important;
+  } 
+  
+  .input-group .btn-primary {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(195, 40, 40, 0.9) !important;
+    width: 50% !important;
+    float: right !important;
+    margin-right: 0 !important;
+  }
+  
+  .input-group .btn-primary:hover {
+    background-color: rgba(255, 255, 255, 1) !important;
+    color: #363B3F;
+    border: 0.15em solid rgba(195, 40, 40, 1);
+    border-radius: 0.35em;
+    font-weight: 700;
+  }
+
