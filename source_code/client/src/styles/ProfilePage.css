@@ -1,0 +1,15 @@
+.edit-profile {
+    max-width: 50%;
+    margin: 0 30%;
+    padding: 20px;
+  }
+  
+  .edit-profile h1 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .edit-profile form {
+    display: flex;
+    flex-direction: column;
+  }
