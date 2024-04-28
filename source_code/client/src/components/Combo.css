@@ -1,0 +1,224 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.bgBlack {
+  background: #071019;
+}
+
+.bodys {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: auto;
+}
+
+.container2 {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  margin: 1rem;
+  color: #ba81ad;
+}
+
+.container2 .icon {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  left: -50%;
+  color: #ba81ad;
+}
+
+.container2 .icon .imgBx {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transform: rotate(calc(360deg / 7 * var(--i)));
+ 
+  transform-origin: 150px;
+  /* z-index: 100; */
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 0 0 2px #222, 0 0 0 4px #fff;
+  color: #ba81ad;
+}
+
+.container2 .icon .imgBx.active {
+  box-shadow: 0 0 0 2px white, 0 0 0 6px #ba81ad;
+  border-radius: 100%;
+  color: #ba81ad;
+}
+
+.container2 .icon .imgBx .ico {
+  transform: rotate(calc(-360deg / 7 * var(--i)));
+  transition: 0.5s;
+  /* filter: grayscale(1); */
+  color: #ba81ad;
+}
+
+.container2 .icon .imgBx.active .ico {
+  filter: grayscale(0) !important;
+}
+
+.content {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #ba81ad;
+}
+
+.content::before {
+  content: '';
+  position: absolute;
+  inset: 40px;
+  border: 4px solid transparent;
+  border-left: 4px solid #ba81ad;
+  border-right: 4px solid #fff;
+  border-radius: 50%;
+  animation: animate-01 5s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+  color: #ba81ad;
+}
+
+@keyframes animate-01 {
+  0% {
+    rotate: 0deg;
+  }
+  100% {
+    rotate: 360deg;
+  }
+}
+
+.content::after {
+  content: '';
+  position: absolute;
+  inset: 60px;
+  border: 4px solid transparent;
+  border-left: 4px solid #fff;
+  border-right: 4px solid red;
+  border-radius: 50%;
+  animation: animate-02 2.5s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+  color: #ba81ad;
+}
+
+@keyframes animate-02 {
+  0% {
+    rotate: 360deg;
+  }
+  100% {
+    rotate: 0deg;
+  }
+}
+
+.contentBx {
+  position: absolute;
+  transform: scale(1);
+  transition: 0.5s;
+  opacity: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ba81ad;
+}
+
+.contentBx.active {
+  transform: scale(1);
+  opacity: 1;
+  transition-delay: 0.5s;
+  left: 38%;
+  top: 33%;
+  color: #ba81ad;
+}
+
+.contentBx .carde {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+  color: #ba81ad;
+}
+
+.contentBx .carde .imgBx {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  color: #ba81ad;
+  align-items: center;
+  justify-content: center;
+}
+
+.contentBx .carde .imgBx .icos {
+  position: absolute;
+  /* left: 15px;
+  top: 10px; */
+  object-fit: cover;
+  color: #ba81ad;
+  align-items: center;
+}
+
+.contentBx .carde .textBx {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: #ba81ad;
+}
+
+.contentBx .carde h6 {
+  position: absolute;
+  font-size: 0.5em;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 1rem;
+  margin-left: 0.5rem;
+  color: #ba81ad;
+}
+
+/* ========================================================================================= */
+/* Default styles */
+/* Extra small devices (phones, 0px to 575px) */
+@media only screen and (min-width: 0px) and (max-width: 575px) {
+
+ 
+}
+
+/* Small devices (landscape phones, 576px to 767px) */
+@media only screen and (min-width: 576px) and (max-width: 767px) {
+ 
+}
+
+/* Medium devices (tablets, 768px to 991px) */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+ 
+}
+
+/* Large devices (desktops, 992px to 1199px) */
+@media only screen and (min-width: 992px) and (max-width: 1199px) {
+  /* CSS rules for large screens */
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  /* CSS rules for extra large screens */
+}
