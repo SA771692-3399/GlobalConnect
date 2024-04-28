@@ -160,4 +160,72 @@ const handleEditOrderStatus = (orderId) => {
      notifyError("Failed to fetch data");
    }
  };}
+
+  
+ return (
+    <div className="seller-dashboard-container">
+       <ToastContainer />
+      <nav className="side-navbar">
+        <div className="navbar-logo">
+          <img src={logo} alt="Company Logo" className="logo" />
+        </div>
+        <ul className="navbar-menu">
+          <li>
+            <Link
+              className={`menu-item ${
+                activeTab === "dashboard" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("dashboard")}
+            >
+              <FontAwesomeIcon icon={faHome} />
+              <span>Dashboard</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${activeTab === "orders" ? "active" : ""}`}
+              onClick={() => setActiveTab("orders")}
+            >
+              <FontAwesomeIcon icon={faBoxOpen} />
+              <span>Manage Orders</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${
+                activeTab === "addProduct" ? "active" : ""
+              }`}
+              onClick={() => handleActiveTab("addProduct")}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              <span>Add Product</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className={`menu-item ${
+                activeTab === "settings" ? "active" : ""
+              }`}
+              onClick={() => setActiveTab("settings")}
+            >
+              <FontAwesomeIcon icon={faCog} />
+              <span>My Details</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/logout" className="menu-item">
+              <FontAwesomeIcon icon={faSignOutAlt} />
+              <span>Logout</span>
+            </Link>
+          </li>
+        </ul>
+        <div className="user-profile">
+          <FontAwesomeIcon icon={faUser} />
+          <span>{details ? details.UserName : "Loading..."}</span>
+        </div>
+      </nav>
+      <main className="dashboard-content">{renderContent()}</main>
+    </div>
+  );
+  
  export default SellerDashboard;
