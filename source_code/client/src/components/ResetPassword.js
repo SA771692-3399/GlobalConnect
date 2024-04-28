@@ -12,23 +12,25 @@ function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (newPassword !== confirmPassword) {
-        setMessage("Passwords do not match");
+        setErrorMessage("Passwords do not match");
         return;
       }
       const response = await axios.post("http://localhost:8000/reset-password", { token, newPassword });
       setMessage(response.data);
     } catch (error) {
       console.error("Error:", error.response.data);
-      setMessage(error.response.data);
+      setErrorMessage(error.response.data);
     }
   };
 
   return (
+    <>
     <div className="reset-password-container">
       <div className="reset-password-box">
         <img src={logo} alt="Company Logo" className="reset-password-logo" />
@@ -58,12 +60,15 @@ function ResetPassword() {
           </div>
           <button type="submit" className="reset-password-button">Reset Password</button>
         </form>
-        {message && <div className="message">{message}</div>}
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
+        {message && <div className="success-message">{message}</div>}
         <div className="login-link">
           Remembered your password? <Link to="/login">Login</Link>
         </div>
       </div>
     </div>
+
+    </>
   );
 }
 
