@@ -1,0 +1,159 @@
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background: white;
+    overflow-x: hidden;
+  }
+  
+  #linkID {
+    color: white;
+    font-size: 12px;
+  }
+  
+  .headText {
+    margin-top: 20%;
+  }
+  
+  .topnav {
+    background: #7e5888;
+    padding: 10px;
+    height: 34px;
+    padding: 0;
+  }
+  
+  .clr {
+    color: #2fc6d9;
+  }
+  
+  .bgBlue {
+    background: #2fc6d9;
+    color: white;
+  }
+  
+  .font12 {
+    font-size: 12;
+  }
+  
+  .navDiv {
+    padding: 0px;
+    border: none;
+  }
+  
+  .navDiv a {
+    padding-left: 10px;
+    text-decoration: none;
+    color: white;
+  }
+  
+  .bgclr {
+    background: #2fc6d9;
+    border: none;
+  
+  }
+  
+  #bgclr {
+    background: #2fc6d9;
+    margin-right: 5%;
+    padding: 5px;
+    border: none;
+  }
+  
+  .clr {
+    color: #2fc6d9;
+    border: none;
+  }
+  
+  .navDiv a .navIcons {}
+  
+  .heroMain {
+    width: 100%;
+    height: 85vh;
+    background: #071019;
+  
+  }
+  
+  .bgBlack {
+    background: #071019;
+    color: #7e5888;
+  }
+  
+  .topnavbg {
+    /* background:#ba81ad; */
+    background-color: none;
+    z-index: 1000;
+    /* Ensure navbar stays on top */
+    border: none;
+    height: auto;
+    margin-bottom: -7rem;
+  
+  }
+  
+  .hero-slide.active {
+    opacity: 1;
+  }
+  
+  .mainLogo {
+    width: 8rem;
+    margin-left: 10px;
+  
+  }
+  
+  .navs {
+    justify-content: flex-end;
+    margin-right: 10px;
+  }
+  
+  .navbar-toggler {
+    background: white;
+  }
+  
+  .left-content {
+    flex: 1;
+    text-align: left;
+  }
+  
+  .right-content {
+    text-align: right;
+  }
+  
+  .navbar-nav {
+    color: #7e5888;
+    font-size: 12px;
+  
+  }
+  
+  .navbar-nav Link {
+    color: #7e5888;
+  
+  }
+  
+  #topbutton {
+    margin-top: -.5rem;
+    padding: 4px;
+    font-size: 15px;
+  
+  }
+  
+  /* ===================================== Hero Section =============================== */
+  .session1 {
+    width: 50%;
+  
+  }
+  
+  .imgs {
+    width: 600px;
+    /* Adjust width as needed */
+    max-width: 800px;
+    /* Maximum width */
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    aspect-ratio: 1/1;
+    margin-bottom: 10%;
+    margin-left: 10%;
+    margin-right: -10%;
+    /* Maintain aspect ratio */
+  }
