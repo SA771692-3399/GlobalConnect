@@ -1,189 +1,171 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
 
-import { useAuth } from "../provider/AuthProvider"; 
+import { useAuth } from "../provider/AuthProvider";
 
-import axios from "axios"; 
+import axios from "axios";
 
-import logo from "../assets/GlobalConnect.png"; 
+import logo from "../assets/GlobalConnect.png";
 
-import "../styles/Login.css"; 
+import "../styles/Login.css";
 
-import { ToastContainer, toast } from "react-toastify"; 
+import { ToastContainer, toast } from "react-toastify";
 
-import "react-toastify/dist/ReactToastify.css"; 
+import "react-toastify/dist/ReactToastify.css";
 
- 
+import Topnav from "./Topnav";
 
-function Login() { 
+import MainNav from "./MainNav";
 
-  const [username, setUsername] = useState(""); 
+import Footer from "./Footer";
 
-  const [password, setPassword] = useState(""); 
+function Login() {
+  const [username, setUsername] = useState("");
 
-  const { setToken, setRole_ } = useAuth(); 
+  const [password, setPassword] = useState("");
 
-  const navigate = useNavigate(); 
+  localStorage.setItem("username", username);
 
- 
+  const { setToken, setRole_ } = useAuth();
 
-  const notifySuccess = (message) => toast.success(message); 
+  const navigate = useNavigate();
 
-  const notifyError = (message) => toast.error(message); 
+  const notifySuccess = (message) => toast.success(message);
 
- 
+  const notifyError = (message) => toast.error(message);
 
-  const handleLogin = async (e) => { 
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-    e.preventDefault(); 
+    try {
+      const res = await axios.post("http://localhost:8000/login", {
+        UserName: username,
 
-    try { 
+        Password: password,
+      });
 
-      const res = await axios.post("http://localhost:8000/login", { 
+      setRole_(res.data.Role);
 
-        UserName: username, 
+      setToken(res.data.token);
 
-        Password: password, 
+      console.log(res.data.UserID);
 
-      }); 
+      localStorage.setItem("userID", res.data.UserID);
 
-      setRole_(res.data.Role); 
+      if (res.data.Role === "Admin") {
+        navigate("/admin");
+      } else if (res.data.Role === "Seller") {
+        console.log(res.data.Role);
 
-      setToken(res.data.token); 
+        navigate("/seller-dashboard");
+      } else if (res.data.Role === "LocalOwner") {
+        console.log(res.data.Role);
 
- 
+        navigate("/seller-dashboard");
+      } else {
+        navigate("/user");
+      }
 
-      if (res.data.Role === "Admin") { 
+      notifySuccess("Login successful.");
+    } catch (error) {
+      console.error("Login error:", error);
 
-        navigate("/admin"); 
+      notifyError("Invalid username or password. Please try again.");
+    }
+  };
 
-      } else if (res.data.Role === "Seller") { 
+  return (
+    <>
+      <Topnav />
 
-        navigate("/seller-dashboard"); 
+      <MainNav />
 
-      } else { 
+      <div
+        className="registration-form"
+        style={{
+          backgroundImage: 'url("./p3.webp")',
 
-        navigate("/user"); 
+          backgroundSize: "cover",
 
-      } 
+          backgroundPosition: "center",
 
-      notifySuccess("Login successful."); 
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <ToastContainer />
 
-    } catch (error) { 
-
-      console.error("Login error:", error); 
-
-      notifyError("Invalid username or password. Please try again."); 
-
-    } 
-
-  }; 
-
- 
-
-  return ( 
-
-    <div className="login_container"> 
-
-      <ToastContainer /> 
-
-      <div className="login-box"> 
-
-        <img src={logo} alt="Company Logo" className="login-logo" /> 
-
-        <h2 className="login-heading">Login</h2> 
-
-        <form className="login-form" onSubmit={handleLogin}> 
-
-          <div className="form-group"> 
-
-            <label htmlFor="username" className="form-label"> 
-
-              Username: 
-
-            </label> 
-
-            <input 
-
-              type="text" 
-
-              id="username" 
-
-              className="form-input" 
-
-              value={username} 
-
-              onChange={(e) => setUsername(e.target.value)} 
-
-              required 
-
-            /> 
-
-          </div> 
-
-          <div className="form-group"> 
-
-            <label htmlFor="password" className="form-label"> 
-
-              Password: 
-
-            </label> 
-
-            <input 
-
-              type="password" 
-
-              id="password" 
-
-              className="form-input" 
-
-              value={password} 
-
-              onChange={(e) => setPassword(e.target.value)} 
-
-              required 
-
-            /> 
-
-          </div> 
-
-          <button type="submit" className="login_button"> 
-
-            Login 
-
-          </button> 
-
-        </form> 
-
-        <div className="additional-options"> 
-
-          <p className="register-link"> 
-
-            New user? <Link to="/register"> Register</Link> 
-
-          </p> 
-
-          <p className="forgot-password-link"> 
-
-            <Link to="/forget-password">Forget Password</Link> 
-
-          </p> 
-
-        </div> 
-
-      </div> 
-
-    </div> 
-
-  ); 
-
-} 
-
- 
-
-export default Login; 
-
- 
-
- 
+        <form onSubmit={handleLogin} className="mt-5">
+          <div
+            className="register-logo"
+            style={{
+              width: "100%",
+
+              background: "#7e5888",
+
+              display: "flex",
+
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={logo}
+              alt="Company Logo"
+              style={{ widows: "10rem", height: "8rem" }}
+            />
+          </div>
+
+          <div className="form-group" style={{ marginTop: "1rem" }}>
+            <span class="label label-default ml-1">Username</span>
+
+            <input
+              type="text"
+              className="form-control item"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              placeholder="Enter Your Username"
+            />
+          </div>
+
+          <div className="form-group">
+            <span class="label label-default ml-1">Password</span>
+
+            <input
+              type="password"
+              className="form-control item"
+              placeholder="Enter Your Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <button
+              type="submit"
+              className="btn btn-block create-account"
+              style={{ background: "#7e5888" }}
+            >
+              Login
+            </button>
+          </div>
+
+          <div className="additional-options">
+            <p className="register-link">
+              New user? <Link to="/registers"> Register</Link>
+            </p>
+
+            <p className="forgot-password-link">
+              <Link to="/forget-password">Forget Password</Link>
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <Footer />
+    </>
+  );
+}
+
+export default Login;
