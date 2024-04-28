@@ -5,25 +5,26 @@ const mongoose = require("mongoose");
 const { UserModel, ProductModel } = require("./Models/AppModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
-const nodemailer = require("nodemailer");
-require("dotenv").config();
+const adminRouter = require("./routers/AdminRoutes");
+const adminSellerRouter = require("./routers/AdminSellerRoutes");
+const userRouter = require("./routers/UserRoutes");
+const sellerRouter = require("./routers/SellerRoutes");
 
+const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
+require("dotenv").config();
+const checkauth = require("./Util/checkauth");
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
-  port: 587,
+  service: "Gmail",
   auth: {
-    user: "mandy.macejkovic@ethereal.email",
-    pass: "fYC7FUPhZ1P7G9Bubc",
+    user: "sphoorthyakurathi@gmail.com",
+    pass: "Luckycherry@1693",
   },
 });
-
 const uri =
   process.env.MONGODB_URI || "mongodb://localhost:27017/GlobalConnectDB";
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -34,37 +35,11 @@ connection.once("open", () => {
   checkAdminUser();
 });
 
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = "./uploads/";
-    fs.mkdirSync(uploadDir, { recursive: true });
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage });
-
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  if (!token) {
-    return res.sendStatus(401);
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
-    if (err) {
-      return res.sendStatus(403);
-    }
-    req.user = user;
-    next();
-  });
-};
-
 app.use("/api", apiRouter);
+app.use("/check-auth", checkauth);
+app.get("/check-auth", (req, res) => {
+  res.send({ status: "ok", role: req.user.role });
+});
 
 const checkAdminUser = async () => {
   try {
@@ -97,8 +72,9 @@ app.post("/login", async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).send("Invalid Password");
     }
+    console.log(user.Role);
     const token = jwt.sign(
-      { username: user.UserName, email: user.Email },
+      { username: user.UserName, email: user.Email, role: user.Role },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "1hr" }
     );
@@ -143,22 +119,16 @@ app.post("/forgot-password", async (req, res) => {
       { expiresIn: "15m" }
     );
 
-    // Send reset password email
     const mailOptions = {
-      from: "admin@GlobalConnect.com", // Sender email address
-      to: email, // Recipient email address
+      from: "sphoorthyakurathi@gmail.com",
+      to: email,
       subject: "Password Reset Request",
       html: `<p>To reset your password, click the following link: <a  target="_blank" href="http://localhost:3000/reset-password?param=${resetToken}">Reset Password</a></p>`,
     };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).send("Failed to send reset password email");
-      }
-      console.log("Reset password email sent:", info.response);
+    sgMail.setApiKey("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");
+    await sgMail.send(mailOptions);
+      console.log("Reset password email sent:", email);
       res.status(200).send("Password reset token sent to your email");
-    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -182,164 +152,11 @@ app.post("/reset-password", async (req, res) => {
   }
 });
 
-// Route to get all users
-app.get("/api/users", async (req, res) => {
-  try {
-    const users = await UserModel.find();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Route to update a user's details
-app.put("/api/users/:id", async (req, res) => {
-  const { id } = req.params;
-  const { username, email, phoneNumber, address } = req.body;
-
-  try {
-    const user = await UserModel.findByIdAndUpdate(
-      id,
-      { username, email, phoneNumber, address },
-      { new: true }
-    );
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-app.post(
-  "/api/products",
-  authenticateToken,
-  upload.single("image"),
-  async (req, res) => {
-    try {
-      const { name, price, description, quantity, category } = req.body;
-      const seller = req.body.seller;
-
-      if (
-        !name ||
-        !price ||
-        !description ||
-        !quantity ||
-        !req.file ||
-        !seller ||
-        !category
-      ) {
-        return res.status(400).json({
-          success: false,
-          message: "Missing required fields or image",
-        });
-      }
-
-      const product = new ProductModel({
-        name,
-        price,
-        description,
-        quantity,
-        image: req.file.path,
-        seller,
-        category,
-      });
-
-      await product.save();
-      res
-        .status(201)
-        .json({ success: true, message: "Product added successfully" });
-    } catch (error) {
-      console.error("Error adding product:", error.message);
-      res
-        .status(500)
-        .json({ success: false, message: "Failed to add product" });
-    }
-  }
-);
-
-app.get("/api/products", async (req, res) => {
-  try {
-    const products = await ProductModel.find().populate("seller", "UserName");
-    res.status(200).json({ success: true, products });
-  } catch (error) {
-    console.error("Error fetching products:", error.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch products" });
-  }
-});
-
-app.get("/api/products/:id", async (req, res) => {
-  try {
-    const product = await ProductModel.findById(req.params.id).populate(
-      "seller",
-      "UserName"
-    );
-    if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
-    }
-    res.status(200).json({ success: true, product });
-  } catch (error) {
-    console.error("Error fetching product:", error.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch product" });
-  }
-});
-
-app.put("/api/products/:id", async (req, res) => {
-  try {
-    const { name, price, description, quantity, image, category } = req.body;
-    const product = await ProductModel.findByIdAndUpdate(
-      req.params.id,
-      {
-        name,
-        price,
-        description,
-        quantity,
-        image,
-        category,
-      },
-      { new: true }
-    );
-    if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
-    }
-    res.status(200).json({
-      success: true,
-      message: "Product updated successfully",
-      product,
-    });
-  } catch (error) {
-    console.error("Error updating product:", error.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to update product" });
-  }
-});
-
-app.delete("/api/products/:id", async (req, res) => {
-  try {
-    const product = await ProductModel.findByIdAndDelete(req.params.id);
-    if (!product) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Product not found" });
-    }
-    res
-      .status(200)
-      .json({ success: true, message: "Product deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting product:", error.message);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to delete product" });
-  }
-});
 app.use(express.static(__dirname));
+app.use("/admin", adminRouter);
+app.use("/admin-seller", adminSellerRouter);
+app.use("/user", userRouter);
+app.use("/seller", sellerRouter);
 
 app.listen(8000, () => {
   console.log("Server is running on port 8000");
