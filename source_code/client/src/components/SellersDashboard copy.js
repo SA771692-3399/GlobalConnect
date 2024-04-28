@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Select from 'react-select';
 import {
   faHome,
   faBoxOpen,
@@ -9,41 +8,33 @@ import {
   faSignOutAlt,
   faPlus,
   faCog,
+  faEdit,
+  faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/GlobalConnect.png";
-import "../styles/AdminDashboard.css";
+import "../styles/SellerDashboard.css";
 import axios from "axios";
+import Select from 'react-select';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DisplayProduct from "./DisplayProduct";
 import Tests from "./Tests";
 import AddImg from "./AddImg";
-import AdminFqa from "./AdminFqa";
-import AddFqa from "./AddFqa";
-import APadmin from "./APadmin";
+import DisplayProducts from "./DisplayProducts";
 import { clothOptions, foodOptions, initAddProduct } from "../utils/generalUtils";
 
-function AdminDashboard() {
+function SellerDashboard() {
   const Role = localStorage.getItem("Role");
   const userID = localStorage.getItem("userID");
   const [activeTab, setActiveTab] = useState("dashboard");
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [details, setDetails] = useState({});
-  const [users, setUsers] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [productPrices, setProductPrices] = useState([]);
-
   const [formData, setFormData] = useState();
 
   const sizeOptions = formData?.category?.toLowerCase() == "food" ? foodOptions : clothOptions;
-
-  const InitAddForm = () => {
-    setSelectedSizes(() => []);
-    setProductPrices(() => []);
-    setFormData(initAddProduct);
-  }
 
   const [editingProduct, setEditingProduct] = useState(null);
   const notifySuccess = (message) => toast.success(message);
@@ -57,16 +48,7 @@ function AdminDashboard() {
     "Order confirmed",
     "Order processing",
     "Order Shipped",
-    "Order Dispatched",
-    "In transit",
-    "Out for delivery",
-    "Delivered",
-    "Attempted delivery",
     "Canceled",
-    "Held at customs",
-    "Awaiting pickup",
-    "Delayed",
-    "Lost",
   ];
 
   const handleActiveTab = (tabName) => {
@@ -86,24 +68,31 @@ function AdminDashboard() {
       setEditingProduct(null);
     }
   };
+
   const handleSaveOrderStatus = async (orderId, order) => {
     try {
       const token = localStorage.getItem("token");
+
       if (!token) throw new Error("No token found");
 
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
       if (orderComments === "") {
-        setOrderComments("Updated by Admin");
+        setOrderComments("Updated by Seller");
       }
 
-      // let newProductsStatus = order?.productsOrdered?.map((o) => ({
-      //   ...o,
-      //   productDeliveryStatus: orderStatus
-      // }))
+      let otherProducts = order?.productsOrdered?.filter(e => e?.sellerId != userID);
+
+      let newProductsStatus = order?.productsOrdered?.filter(e => e?.sellerId == userID)?.map((o) => ({
+        ...o,
+        productDeliveryStatus: orderStatus
+      }))
 
       await axios.patch(`http://localhost:8000/seller/orders/${orderId}`, {
-        productsOrdered: order?.productsOrdered,
-        deliveryStatus: orderStatus,
+        productsOrdered: [
+          ...otherProducts,
+          ...newProductsStatus
+        ],
+        // deliveryStatus: orderStatus,
         comments: orderComments,
       });
 
@@ -121,95 +110,6 @@ function AdminDashboard() {
       notifyError("Failed to update order status");
     }
   };
-
-  const handleEditOrderStatus = (orderId, order) => {
-    setEditingOrder(orderId);
-    setOrderComments(order?.comments)
-  };
-
-  useEffect(() => {
-    fetchData();
-    initializeFormData();
-  }, []);
-
-  const initializeFormData = () => {
-    setFormData({
-      username: details.UserName,
-      email: details.Email,
-      phoneNumber: details.PhoneNumber || "",
-      address: details.Address || "",
-      password: "",
-      newPassword: "",
-    });
-  };
-
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No token found");
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      try {
-        await axios.get("http://localhost:8000/check-auth");
-      } catch (e) {
-        console.log(e);
-        alert("session expired");
-        nav("/login");
-      }
-
-      const userDetailsRes = await axios.get(
-        "http://localhost:8000/api/userDetails"
-      );
-      setDetails(userDetailsRes.data.User);
-      setFormData({
-        id: userDetailsRes.data.User._id,
-        username: userDetailsRes.data.User.UserName,
-        email: userDetailsRes.data.User.Email,
-        phoneNumber: userDetailsRes.data.User.PhoneNumber || "",
-        address: userDetailsRes.data.User.Address || "",
-      });
-
-      const productsRes = await axios.get("http://localhost:8000/api/products");
-      setProducts(productsRes.data.products);
-
-      const usersRes = await axios.get("http://localhost:8000/admin/users");
-      setUsers(usersRes.data);
-      const ordersRes = await axios.get("http://localhost:8000/admin/orders");
-      setOrders(ordersRes.data.orders);
-    } catch (error) {
-      console.error("Error fetching data:", error.message);
-      notifyError("Failed to fetch data");
-    }
-  };
-
-  const handleDeleteProduct = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No token found");
-
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      await axios.delete(`http://localhost:8000/admin-seller/products/${id}`);
-      setProducts(products.filter((product) => product._id !== id));
-      notifySuccess("Product deleted successfully");
-    } catch (error) {
-      console.error("Error deleting product:", error.message);
-      notifyError("Failed to delete product");
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files) {
-      setFormData({
-        ...formData,
-        [name]: files[0],
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-  };
   const handleSizeChange = (selectedOptions) => {
     setSelectedSizes(selectedOptions);
     setFormData((prevFormData) => ({
@@ -217,6 +117,12 @@ function AdminDashboard() {
       sizeProduct: selectedOptions.map((option) => option.value),
     }));
   };
+
+  const InitAddForm = () => {
+    setSelectedSizes(() => []);
+    setProductPrices(() => []);
+    setFormData(initAddProduct);
+  }
 
   // useEffect(() => {
   //   console.log("🚀 ~ productPrices:", productPrices)
@@ -254,10 +160,100 @@ function AdminDashboard() {
     }));
   };
 
+  const handleEditOrderStatus = (orderId, order) => {
+    setEditingOrder(orderId);
+    setOrderComments(order?.comments)
+  };
+
+  useEffect(() => {
+    fetchData();
+    initializeFormData();
+  }, []);
+
+  const initializeFormData = () => {
+    setFormData({
+      username: details.UserName,
+      email: details.Email,
+      phoneNumber: details.PhoneNumber || "",
+      address: details.Address || "",
+    });
+  };
+  const handleEditPlace = (id) => {
+    setActiveTab("myplace");
+    setEditingProduct(id);
+  };
+  const handlePic = (id) => {
+    setActiveTab("addPic");
+    setEditingProduct(id);
+  };
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found");
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      try {
+        await axios.get("http://localhost:8000/check-auth");
+      } catch (e) {
+        console.log(e);
+        alert("session expired");
+        nav("/login");
+      }
+
+      const userDetailsRes = await axios.get(
+        "http://localhost:8000/api/userDetails"
+      );
+      setDetails(userDetailsRes.data.User);
+
+      const productsRes = await axios.get("http://localhost:8000/api/products");
+      setProducts(productsRes.data.products);
+
+      const ordersRes = await axios.get("http://localhost:8000/seller/orders");
+      setOrders(ordersRes.data.orders);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+      //notifyError("Failed to fetch data");
+    }
+  };
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found");
+
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      await axios.delete(`http://localhost:8000/admin-seller/products/${id}`);
+      setProducts(products.filter((product) => product._id !== id));
+      notifySuccess("Product deleted successfully");
+    } catch (error) {
+      console.error("Error deleting product:", error.message);
+      notifyError("Failed to delete product");
+    }
+  };
+
+  useEffect(() => {
+    console.log("selectedSizes", selectedSizes);
+  }, [selectedSizes])
+
+  const handleInputChange = (e) => {
+    const { name, value, files } = e.target;
+    if (files) {
+      setFormData({
+        ...formData,
+        [name]: files[0],
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const {
+        id,
         name,
         productPrices,
         description,
@@ -267,9 +263,6 @@ function AdminDashboard() {
         sizeProduct,
         spice,
       } = formData;
-
-      console.log("FormData", formData);
-
       if (
         !name ||
         productPrices?.length === 0 ||
@@ -277,14 +270,14 @@ function AdminDashboard() {
         !quantity ||
         !image ||
         !category ||
-        !sizeProduct 
+        !sizeProduct
       ) {
         throw new Error("Missing required fields");
       }
 
       const formDataToSend = new FormData();
       formDataToSend.append("name", name);
-      // formDataToSend.append("price", price);
+      // formDataToSend.append("productPrices", JSON.stringify(productPrices));
       productPrices.forEach((price, index) => {
         Object.entries(price).forEach(([key, value]) => {
           formDataToSend.append(`productPrices[${index}][${key}]`, value);
@@ -295,7 +288,10 @@ function AdminDashboard() {
       formDataToSend.append("image", image);
       formDataToSend.append("category", category);
       formDataToSend.append("sizeProduct", sizeProduct);
-      formDataToSend.append("spice", spice);
+      
+      if (formData?.category?.toLowerCase() !== "food") {
+        formDataToSend.append("spice", spice);
+      }
 
       formDataToSend.append("seller", details._id);
       setSelectedSizes(sizeProduct || []);
@@ -320,7 +316,8 @@ function AdminDashboard() {
         const updatedProducts = [...products];
         updatedProducts[updatedProductIndex] = res.data.product;
         setProducts(updatedProducts);
-        setSelectedSizes([]);
+        setSelectedSizes(() => []);
+        setProductPrices(() => []);
         setEditingProduct(null);
         setActiveTab("dashboard");
         notifySuccess("Product updated successfully");
@@ -353,6 +350,7 @@ function AdminDashboard() {
       console.error("Error adding/updating product:", error.message);
       notifyError("Failed to add/update product");
     }
+    fetchData();
   };
 
   const handleEditProduct = (id) => {
@@ -370,9 +368,10 @@ function AdminDashboard() {
       productPrices: product?.productPrices,
       spice: product.spice,
     });
-    
 
-    setSelectedSizes(() => product?.sizeProduct?.[0]?.split(",")?.map((e) => sizeOptions?.find((v) => v?.value == e)));
+    let sizes = product?.category?.toLowerCase() == "food" ? foodOptions : clothOptions;
+
+    setSelectedSizes(() => product?.sizeProduct?.[0]?.split(",")?.map((e) => sizes?.find((v) => v?.value == e)));
     setProductPrices(() => product?.productPrices);
 
     setActiveTab("addProduct");
@@ -388,16 +387,25 @@ function AdminDashboard() {
         email,
         phoneNumber,
         address,
+        // password,
+        // newPassword,
       } = formData;
 
       const token = localStorage.getItem("token");
+      const userID = localStorage.getItem("userID");
+    
       if (!token) throw new Error("No token found");
 
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
       const res = await axios.put("http://localhost:8000/api/updateProfile/"+ userID, {
+        // userID,
+        // id,
+        // username,
         email,
         phoneNumber,
         address,
+        // password,
+        // newPassword,
       });
       setDetails(res.data.User);
       notifySuccess("User details updated successfully");
@@ -407,64 +415,29 @@ function AdminDashboard() {
     }
   };
 
-  const handleEditUser = (id) => {
-    const user = users.find((user) => user._id === id);
-    setFormData({
-      id: user._id,
-      username: user.UserName,
-      email: user.Email,
-      phoneNumber: user.PhoneNumber || "",
-      address: user.Address || "",
-    });
-    setActiveTab("settings");
-  };
-  const handleEditPlace = (id) => {
-    setActiveTab("myplace");
-    setEditingProduct(id);
-  };
-  const handlePic = (id) => {
-    setActiveTab("addPic");
-    setEditingProduct(id);
-  };
-  const handleDeleteUser = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) throw new Error("No token found");
+  const getProductsPrice = (order) => {
+    let products = order?.productsOrdered?.filter(e => e?.sellerId == userID);
 
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      await axios.delete(`http://localhost:8000/admin/users/${id}`);
-      setUsers(users.filter((user) => user._id !== id));
-      notifySuccess("User deleted successfully");
-    } catch (error) {
-      console.error("Error deleting user:", error.message);
-      notifyError("Failed to delete user");
-    }
-  };
-  useEffect(() => {
-    console.log(products, "useEffect");
-  }, [products]);
+    let total = 0;
+    products?.map(p => total += (p?.productPrice * p?.orderedQuantity))
+
+    return total?.toFixed(2)
+  }
+
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
         return (
-          <DisplayProduct
+          <>
+          <DisplayProducts
             products={products}
             handleEditProduct={handleEditProduct}
             handleDeleteProduct={handleDeleteProduct}
             handleEditPlace={handleEditPlace}
             handlePic={handlePic}
+            Role={Role}
+            userID={userID}
           />
-        );
-      case "addFaq":
-        return (
-          <>
-            <AddFqa />
-          </>
-        );
-      case "faq":
-        return (
-          <>
-            <AdminFqa />
           </>
         );
       case "settings":
@@ -540,6 +513,10 @@ function AdminDashboard() {
             </form>
           </div>
         );
+      case "myplace":
+        return <Tests productId={editingProduct} />;
+      case "addPic":
+        return <AddImg productId={editingProduct} />;
       case "orders":
         return (
           <div>
@@ -548,6 +525,7 @@ function AdminDashboard() {
               <thead>
                 <tr>
                   <th>Order ID</th>
+                  {/* <th>Tracking ID</th> */}
                   <th>Customer Details</th>
                   <th>Product Details</th>
                   <th>Total</th>
@@ -560,43 +538,32 @@ function AdminDashboard() {
               <tbody>
                 {orders.map((order) => (
                   <tr key={order._id}>
-                    <td>
-                  
-                    <p>{`Tracking ID: TID${order._id.substring(order._id.length - 8)}`}</p>
-                    <p>Order ID: {order._id}</p>
-                    </td>
+                    <td>{`${order._id.substring(order._id.length - 8)}`}</td>
                     <td>
                       <p>
-                        <strong>
-                          {order.customer_details?.name || "N/A"}{" "}
-                        </strong>
+                        <strong>{order.customer_details.name}</strong>
                       </p>
                       <p>
-                        {order.customer_details?.address?.line1 || "N/A"}
+                        {order.customer_details.address.line1}
                         <br />
-                        {order.customer_details?.address?.line2 || "N/A"}
+                        {order.customer_details.address.line2}
                         <br />
-                        {order.customer_details?.address?.city || "N/A"},{" "}
-                        {order.customer_details?.address?.state || "N/A"}
+                        {order.customer_details.address.city},{" "}
+                        {order.customer_details.address.state}
                         <br />
-                        {order.customer_details?.address?.country ||
-                          "N/A"} -{" "}
-                        {order.customer_details?.address?.postal_code || "N/A"}
+                        {order.customer_details.address.country} -{" "}
+                        {order.customer_details.address.postal_code}
                       </p>
                       <p>
-                        <strong>
-                          {order.customer_details?.phone || "N/A"}
-                        </strong>
+                        <strong>{order.customer_details.phone}</strong>
                       </p>
                       <p>
-                        <strong>
-                          {order.customer_details?.email || "N/A"}
-                        </strong>
+                        <strong>{order.customer_details.email}</strong>
                       </p>
                     </td>
                     <td>
-                    <div style={{minWidth: "10rem"}}>
-                        {order?.productsOrdered?.map((o, i) => (
+                      <div style={{minWidth: "10rem"}}>
+                        {order?.productsOrdered?.filter(e => e?.sellerId == userID)?.map((o, i) => (
                           <div key={i} className="d-flex align-items-start gap-2 rounded mb-3" style={{backgroundColor: "white", padding: "0.4rem"}}>
                             <img src={`http://localhost:8000/${o?.image}`} alt={o?.name} className="rounded" style={{ objectFit: "contain", width: "3rem" }} />
                             <div className="">
@@ -608,7 +575,8 @@ function AdminDashboard() {
                         ))}
                       </div>
                     </td>
-                    <td>${order.amount_subtotal / 100}</td>
+                    <td>${getProductsPrice(order)}</td>
+                    {/* <td>${order.amount_subtotal / 100}</td> */}
                     <td>{order.payment_status}</td>
                     <td>
                       {editingOrder === order._id ? (
@@ -635,11 +603,11 @@ function AdminDashboard() {
                     <td>
                       {editingOrder === order._id ? (
                         <textarea
-                          value={order.comments}
+                          value={orderComments}
                           onChange={(e) => setOrderComments(e.target.value)}
                         />
                       ) : (
-                        order.comments
+                        order.comments ?? "--"
                       )}
                     </td>
                     <td>
@@ -666,87 +634,98 @@ function AdminDashboard() {
       case "addProduct":
         return (
           <div className="add-product-form-container">
-          <h1>{formData.name ? "Update Product" : "Add Product"}</h1>
-          <form className="add-product-form" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="productName">Product Name:</label>
-              <input
-                type="text"
-                id="productName"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            {/* <div>
-              <label htmlFor="productPrice">Product Price:</label>
-              <input
-                type="number"
-                id="productPrice"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                required
-              />
-            </div> */}
-            <div>
-              <label htmlFor="category">Category:</label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a category</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Food">Food</option>
-                <option value="Local business">Local business</option>
-              </select>
-            </div>
+            <h1>{formData.id ? "Update Product" : "Add Product"}</h1>
+            <form className="add-product-form" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="productName">Product Name:</label>
+                <input
+                  type="text"
+                  id="productName"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              {/* <div>
+                <label htmlFor="productPrice">Product Price:</label>
+                <input
+                  type="number"
+                  id="productPrice"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div> */}
+              <div>
+                <label htmlFor="category">Category:</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Select a category</option>
 
-            {formData?.category?.toLowerCase() !== "food" && (
+                  {Role === "LocalOwner" ? (
+                    <>
+                      <option value="Local business">Local business</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="Clothing">Clothing</option>
+                      <option value="Food">Food</option>
+                    </>
+                  )}
+                </select>
+              </div>
+
+              {formData?.category?.toLowerCase() !== "food" && (
                 <div>
                   <label htmlFor="spice">
-                    {formData.category === "Local business" ? "Spice" : "Color"}
+                    {Role === "LocalOwner" ? "Spice" : "Color"}
                   </label>
-                  {formData.category === "Local business" ? (
+                  {Role === "LocalOwner" ? (
                     <select
                       id="spice"
                       name="spice"
                       value={formData.spice}
                       onChange={handleInputChange}
                     >
-                      <option value="">Select a Spice</option>
+                      <option value="">
+                        Select a {Role === "LocalOwner" ? "Spice" : "Color"}
+                      </option>
                       <option value="mild">Mild</option>
                       <option value="regular">Regular</option>
                       <option value="spicy">Spicy</option>
                     </select>
                   ) : (
                     <input
-                        id="spice"
-                        name="spice"
-                        value={formData.spice}
-                        onChange={handleInputChange}
-                      />
+                      id="spice"
+                      name="spice"
+                      value={formData.spice}
+                      onChange={handleInputChange}
+                    />
                   )}
                 </div>
-            )}
+              )}
 
-            <div className="mb-3">
-              <label htmlFor="sizeProduct">
-                Size
-              </label>
-              <Select
+
+              <div className="mb-3">
+                <label htmlFor="sizeProduct">
+                  Size
+                </label>
+                <Select
                 options={sizeOptions}
                 isMulti
                 value={selectedSizes}
                 onChange={handleSizeChange}
               />
-            </div>
+              </div>
 
-            {selectedSizes?.length > 0 && (
+              {selectedSizes?.length > 0 && (
                 <div>
                   <label htmlFor="productPrice">Product Price:</label>
                   {selectedSizes?.map((o, i) => (
@@ -768,99 +747,52 @@ function AdminDashboard() {
                 </div>
               )}
 
-            <div>
-              <label htmlFor="productDescription">Product Description:</label>
-              <textarea
-                id="productDescription"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                required
-              ></textarea>
-            </div>
-            <div>
-              <label htmlFor="productQuantity">Quantity:</label>
-              <input
-                type="number"
-                id="productQuantity"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="productImage">Upload Image:</label>
-              <input
-                type="file"
-                id="productImage"
-                name="image"
-                onChange={handleInputChange}
-                required={formData.image ? false : true}
-              />
-            </div>
-            {formData.image && (
-              <img
-                src={
-                  formData.image && typeof formData.image === "object"
-                    ? URL.createObjectURL(formData.image)
-                    : `http://localhost:8000/${formData.image}`
-                }
-                alt="Selected"
-                style={{ width: "100px", height: "100px" }}
-              />
-            )}
-            <button type="submit">
-              {formData.name ? "Update Product" : "Add Product"}
-            </button>
-          </form>
-        </div>
-        );
-      case "myplace":
-        return <Tests productId={editingProduct} />;
-      case "addPic":
-        return <AddImg productId={editingProduct} />;
-      case "manageCustomers":
-        return (
-          <div>
-            <h1>Manage Users</h1>
-            <table>
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Email</th>
-                  <th>Phone Number</th>
-                  <th>Address</th>
-                  <th>Role</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users && users.length > 0 ? (
-                  users.map((user) => (
-                    <tr key={user._id}>
-                      <td>{user.UserName}</td>
-                      <td>{user.Email}</td>
-                      <td>{user.PhoneNumber}</td>
-                      <td>{user.Address}</td>
-                      <td>{user.Role}</td>
-                      <td>
-                        <button onClick={() => handleDeleteUser(user._id)}>
-                          Delete
-                        </button>
-                        <button onClick={() => handleEditUser(user._id)}>
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="6">No users available</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+              <div>
+                <label htmlFor="productDescription">Product Description:</label>
+                <textarea
+                  id="productDescription"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  required
+                ></textarea>
+              </div>
+              <div>
+                <label htmlFor="productQuantity">Quantity:</label>
+                <input
+                  type="number"
+                  id="productQuantity"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="productImage">Upload Image:</label>
+                <input
+                  type="file"
+                  id="productImage"
+                  name="image"
+                  onChange={handleInputChange}
+                  required={formData.image ? false : true}
+                />
+              </div>
+              {formData.image && (
+                <img
+                  src={
+                    formData.image && typeof formData.image === "object"
+                      ? URL.createObjectURL(formData.image)
+                      : `http://localhost:8000/${formData.image}`
+                  }
+                  alt="Selected"
+                  style={{ width: "100px", height: "100px" }}
+                />
+              )}
+              <button type="submit">
+                {formData.id ? "Update Product" : "Add Product"}
+              </button>
+            </form>
           </div>
         );
       default:
@@ -869,7 +801,7 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="Admin-dashboard-container">
+    <div className="seller-dashboard-container">
       <ToastContainer />
       <nav className="side-navbar">
         <div className="navbar-logo">
@@ -902,41 +834,12 @@ function AdminDashboard() {
                 activeTab === "addProduct" ? "active" : ""
               }`}
               onClick={() => { 
-                handleActiveTab("addProduct");
-                InitAddForm();
-          }}
+                    handleActiveTab("addProduct");
+                    InitAddForm();
+              }}
             >
               <FontAwesomeIcon icon={faPlus} />
               <span>Add Product</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={`menu-item ${activeTab === "addFaq" ? "active" : ""}`}
-              onClick={() => handleActiveTab("addFaq")}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-              <span>Add Faqs</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={`menu-item ${activeTab === "faq" ? "active" : ""}`}
-              onClick={() => handleActiveTab("faq")}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-              <span>FAQs</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className={`menu-item ${
-                activeTab === "manageCustomers" ? "active" : ""
-              }`}
-              onClick={() => setActiveTab("manageCustomers")}
-            >
-              <FontAwesomeIcon icon={faUser} />
-              <span>Manage Users</span>
             </Link>
           </li>
           <li>
@@ -965,11 +868,9 @@ function AdminDashboard() {
           <span>{details ? details.UserName : "Loading..."}</span>
         </div>
       </nav>
-      <main className="main">{renderContent()}</main>
+      <main className="dashboard-content">{renderContent()}</main>
     </div>
   );
 }
 
-export default AdminDashboard;
-
-
+export default SellerDashboard;
