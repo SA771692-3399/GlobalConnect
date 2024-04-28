@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import logo from "../assets/GlobalConnect.png";
 import { Link } from "react-router-dom";
+import Getfeedback from "./Getfeedback";
 
 function Home() {
   return (
@@ -16,30 +17,18 @@ function Home() {
         <div className="logo-container">
           <img src={logo} alt="Company Logo" className="logo" />
         </div>
-        {/* <nav className="menu">
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About Us</Link>
-            </li>
-            <li>
-              <Link to="/categories">Categories</Link>
-            </li>
-            <li>
-              <Link to="/contact">Contact</Link>
-            </li>
-          </ul>
-        </nav> */}
         <div className="login-container">
           <Link to="/login" className="login-button">
             Login
           </Link>
+          <Link to="/registers" className="login-button">
+            User Register
+          </Link>
+          <Link to="/feedbacks" className="login-button">
+            Feedback
+          </Link>
         </div>
       </header>
-
-
       <main className="main-content">
         <div className="project-info">
           <h2>
@@ -121,13 +110,7 @@ function Home() {
           </form>
         </div>
       </main>
-
-    
-
-
-
-
-
+      <Getfeedback/>
       <footer className="footer">
         <div className="footer-content">
           <div className="footer-section">
@@ -164,3 +147,5 @@ function Home() {
 }
 
 export default Home;
+
+
