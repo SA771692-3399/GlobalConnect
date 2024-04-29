@@ -1,0 +1,21 @@
+{
+    "name": "mern-stack-template",
+    "version": "1.0.0",
+    "scripts": {
+      "start": "concurrently \"npm run server\" \"npm run client\"",
+      "setup": "npm i && cd client && npm i --force && cd ../server && npm i && cd ..",
+      "server": "cd server && npm start",
+      "client": "cd client && npm start",
+
+      "clean": "rmdir *package-lock.json && rmdir */package-lock.json && rmdir *node_modules  && rmdir */node_modules",
+
+      "build": "concurrently \"npm run server\" \"npm run build:client\"",
+      "build:client": "cd client && npm run build",
+
+      "build:preview": "concurrently \"npm run server\" \"npm run build:client:preview\"",
+      "build:client:preview": "cd client && npm run build && npm run preview"
+    },
+    "dependencies": {
+      "concurrently": "^8.2.2"
+    }
+  }
