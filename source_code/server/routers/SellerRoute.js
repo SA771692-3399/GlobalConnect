@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const checkAuth = require("../Util/checkauth");
-const { UserModel, ProductModel, OrderModel } = require("../Models/AppModel");
+const { UserModel, ProductModel, OrderModel, ProductfModel } = require("../Models/AppModel");
 const bcrypt = require("bcryptjs");
 const { authenticateToken, upload } = require("../Util/utils");
 // Middleware to check authentication
@@ -8,7 +8,7 @@ router.use(checkAuth);
  
 const checkSeller = (req, res, next) => {
  try {
-   if (!(req.user.role === "Seller")) {
+   if (!(req.user.role === "Admin") && !(req.user.role === "Seller") && !(req.user.role === "LocalOwner")) {
      throw new Error("User Not Authutenticated to access this route");
    }
    next();
@@ -43,20 +43,18 @@ router.patch("/orders/:id", checkSeller, async (req, res) => {
    res.send(e.message);
  }
 });
+module.exports = router;
  
-router.get("/products",checkSeller, async (req, res) => {
+router.get("/rat/:id", checkSeller, async (req, res) => {
  try {
-   const sellerId = (await UserModel.findOne({ Email: req.user.email }))._id;
-   const products = await ProductModel.find({
-     "seller": sellerId,
-   });
-   res.status(200).json({ status: "Success", products });
- } catch (error) {
-   console.error("Error fetching products:", error);
-   res.status(500).json({ status: "Error", message: "Internal server error" });
+   const productId = req.params.id;
+   const ratings = await ProductfModel.findOne({ _id: productId }).select("ratings");
+ 
+   res.send({ status: "ok", ratings });
+ } catch (e) {
+   console.log(e);
+   res.status(500).send({ error: "Internal Server Error" });
  }
 });
- 
-module.exports = router;
  
  
