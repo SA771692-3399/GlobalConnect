@@ -16,7 +16,7 @@ const UserSchema = new Schema({
   Email: {
     type: String,
     required: true,
-    // unique: true,
+    unique: true,
   },
   Role: {
     type: String,
@@ -150,23 +150,37 @@ const WishlistSchema = new Schema({
     type: String,
     required: true,
   },
-  price: {
-    type: Number,
-    required: true,
-  },
   description: {
     type: String,
+    required: true,
+  },
+  quantity: {
+    type: Number,
     required: true,
   },
   image: {
     type: String,
     required: true,
   },
+  placename: {
+    type: String,
+  },
   spice: {
     type: String,
   },
+  productPrices: {
+    type: [Object], // Change type to an array of strings
+  },  
   sizeProduct: {
+    type: [String], // Change type to an array of strings
+  },  
+  seller: {
+    type: Schema.Types.ObjectId,
+    ref: "UserModel",
+  },  
+  category: {
     type: String,
+    enum: ["Clothing", "Food", "Local business"],
   },
 });
 const PicSchema = new Schema({

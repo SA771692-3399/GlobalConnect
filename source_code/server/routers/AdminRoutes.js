@@ -9,7 +9,7 @@ router.use(checkAuth);
 const checkAdmin = (req, res, next) => {
   try {
     if (!(req.user.role === "Admin")) {
-      throw new Error("User Not Authutenticated to access this route");
+      throw new Error("User Not Authenticated to access this route");
     }
     next();
   } catch (e) {
