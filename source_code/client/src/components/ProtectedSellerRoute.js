@@ -13,7 +13,7 @@ function ProtectedSellerRoute() {
   useEffect(() => {
     (async () => {
       try {
-        await axios.get("http://localhost:8000/check-auth");
+        await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/check-auth");
       } catch (e) {
         console.log(e);
         alert("session expired");
@@ -25,12 +25,11 @@ function ProtectedSellerRoute() {
     role = localStorage.getItem("Role");
   }
 
-  if (role !== "Seller") {
+  if (role !== "Seller" && role !== "LocalOwner") {
     return <Navigate to="/login"></Navigate>;
   }
+  
   return <Outlet />;
 }
 
 export default ProtectedSellerRoute;
-
-

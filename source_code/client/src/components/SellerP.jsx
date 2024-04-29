@@ -14,7 +14,7 @@ export default function SellerP({PID}) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
         const response = await axios.get(
-          `http://localhost:8000/user/sel/${PID}`
+          `http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/sel/${PID}`
         );
         setUserData(response.data.userData); // Set user data in state
       } catch (error) {
@@ -69,5 +69,3 @@ export default function SellerP({PID}) {
     </div>
   );
 }
-
-

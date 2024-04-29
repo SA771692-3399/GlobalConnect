@@ -87,7 +87,7 @@ function SellerDashboard() {
         productDeliveryStatus: orderStatus
       }))
 
-      await axios.patch(`http://localhost:8000/seller/orders/${orderId}`, {
+      await axios.patch(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/seller/orders/${orderId}`, {
         productsOrdered: [
           ...otherProducts,
           ...newProductsStatus
@@ -192,7 +192,7 @@ function SellerDashboard() {
       if (!token) throw new Error("No token found");
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
       try {
-        await axios.get("http://localhost:8000/check-auth");
+        await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/check-auth");
       } catch (e) {
         console.log(e);
         alert("session expired");
@@ -200,14 +200,14 @@ function SellerDashboard() {
       }
 
       const userDetailsRes = await axios.get(
-        "http://localhost:8000/api/userDetails"
+        "http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/api/userDetails"
       );
       setDetails(userDetailsRes.data.User);
 
-      const productsRes = await axios.get("http://localhost:8000/api/products");
+      const productsRes = await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/api/products");
       setProducts(productsRes.data.products);
 
-      const ordersRes = await axios.get("http://localhost:8000/seller/orders");
+      const ordersRes = await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/seller/orders");
       setOrders(ordersRes.data.orders);
     } catch (error) {
       console.error("Error fetching data:", error.message);
@@ -221,7 +221,7 @@ function SellerDashboard() {
       if (!token) throw new Error("No token found");
 
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      await axios.delete(`http://localhost:8000/admin-seller/products/${id}`);
+      await axios.delete(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/products/${id}`);
       setProducts(products.filter((product) => product._id !== id));
       notifySuccess("Product deleted successfully");
     } catch (error) {
@@ -302,7 +302,7 @@ function SellerDashboard() {
 
       if (editingProduct) {
         const res = await axios.patch(
-          `http://localhost:8000/admin-seller/products/${editingProduct}`,
+          `http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/products/${editingProduct}`,
           formDataToSend,
           {
             headers: {
@@ -323,7 +323,7 @@ function SellerDashboard() {
         notifySuccess("Product updated successfully");
       } else {
         const res = await axios.post(
-          "http://localhost:8000/admin-seller/products",
+          "http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/products",
           formDataToSend,
           {
             headers: {
@@ -397,7 +397,7 @@ function SellerDashboard() {
       if (!token) throw new Error("No token found");
 
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-      const res = await axios.put("http://localhost:8000/api/updateProfile/"+ userID, {
+      const res = await axios.put("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/api/updateProfile/"+ userID, {
         // userID,
         // id,
         // username,
@@ -565,7 +565,7 @@ function SellerDashboard() {
                       <div style={{minWidth: "10rem"}}>
                         {order?.productsOrdered?.filter(e => e?.sellerId == userID)?.map((o, i) => (
                           <div key={i} className="d-flex align-items-start gap-2 rounded mb-3" style={{backgroundColor: "white", padding: "0.4rem"}}>
-                            <img src={`http://localhost:8000/${o?.image}`} alt={o?.name} className="rounded" style={{ objectFit: "contain", width: "3rem" }} />
+                            <img src={`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/${o?.image}`} alt={o?.name} className="rounded" style={{ objectFit: "contain", width: "3rem" }} />
                             <div className="">
                               <div>{`${o?.productName} (${o?.orderedSize})`}</div>
                               <div>Qty: {o?.orderedQuantity}</div>
@@ -783,7 +783,7 @@ function SellerDashboard() {
                   src={
                     formData.image && typeof formData.image === "object"
                       ? URL.createObjectURL(formData.image)
-                      : `http://localhost:8000/${formData.image}`
+                      : `http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/${formData.image}`
                   }
                   alt="Selected"
                   style={{ width: "100px", height: "100px" }}

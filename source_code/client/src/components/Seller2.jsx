@@ -40,5 +40,3 @@ Embark on an exciting journey as a local business owner specializing in catering
     </div>
   )
 }
-
-

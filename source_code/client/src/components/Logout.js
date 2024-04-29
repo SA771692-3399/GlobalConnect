@@ -1,43 +1,23 @@
-import React, { useEffect } from "react"; 
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../provider/AuthProvider";
 
-import { useNavigate } from "react-router-dom"; 
+function Logout() {
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
 
-import { useAuth } from "../provider/AuthProvider"; 
+  useEffect(() => {
+    const logout = async () => {
+      navigate("/", { replace: true });
+      setToken();
 
- 
+      localStorage.clear();
+      window.location.href = "/";
+    };
+    logout(); 
+  }, []);
 
-function Logout() { 
+  return <></>; 
+}
 
-  const { setToken } = useAuth(); 
-
-  const navigate = useNavigate(); 
-
- 
-
-  useEffect(() => { 
-
-    const logout = async () => { 
-
-      navigate("/", { replace: true }); 
-
-      setToken(); 
-
-    }; 
-
-    logout();  
-
-  }, []); 
-
- 
-
-  return <></>;  
-
-} 
-
- 
-
-export default Logout; 
-
- 
-
- 
+export default Logout;

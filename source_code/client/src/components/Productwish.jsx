@@ -19,10 +19,15 @@ function Productwish() {
       if (!token) throw new Error("No token found");
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
-      const res = await axios.post(`http://localhost:8000/user/wishlist/${id}`, {
-        userID,
-        productID: id,
-      });
+      const productDataResp = await axios.get(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/api/products/${id}`);
+
+      let productData = productDataResp?.data?.product
+
+      productData["userID"] = userID;
+      productData["productID"] = id;
+
+
+      const res = await axios.post(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/wishlist/${id}`, productData);
       
       
       nav("/user", { replace: true });

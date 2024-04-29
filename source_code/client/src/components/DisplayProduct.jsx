@@ -44,7 +44,7 @@ export default function DisplayProduct({
             >
               {product.image && (
                 <img
-                  src={`http://localhost:8000/${product.image}`}
+                  src={`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/${product.image}`}
                   className="card-img-top"
                   alt={product.title}
                   style={{

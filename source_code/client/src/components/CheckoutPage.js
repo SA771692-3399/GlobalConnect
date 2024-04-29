@@ -23,7 +23,7 @@ function CheckoutPage() {
       return { productID: p[0], size: p[1]?.size, quantity: p[1]?.quantity };
     });
     if (productFlag) {
-      await axios.post("http://localhost:8000/user/cart", {
+      await axios.post("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/cart", {
         products: productsArray,
       });
     }
@@ -35,7 +35,7 @@ function CheckoutPage() {
     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
     try {
       (async () => {
-        await axios.get("http://localhost:8000/check-auth");
+        await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/check-auth");
       })();
     } catch (e) {
       console.log(e);
@@ -44,7 +44,7 @@ function CheckoutPage() {
     }
 
     (async () => {
-      const cartRes = await axios.get("http://localhost:8000/user/cart");
+      const cartRes = await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/cart");
       if (cartRes.data.products) {
         const prodJSON = {};
         cartRes.data.products.forEach((c) => {
@@ -66,7 +66,7 @@ function CheckoutPage() {
         try {
           const productIds = Object.keys(cart);
           const productPromises = productIds.map((productId) =>
-            axios.get(`http://localhost:8000/api/products/${productId}`)
+            axios.get(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/api/products/${productId}`)
           );
           const productResponses = await Promise.all(productPromises);
           const productsData = productResponses.map(
@@ -95,13 +95,10 @@ function CheckoutPage() {
     if (!product) return;
 
     if (newQuantity > 0 && newQuantity <= product.quantity) {
-      const updatedCart = {
-        ...cart,
-        [productId]: {
-          quantity: newQuantity,
-          size: cart[product._id]?.size,
-        },
-      };
+      const updatedCart = { ...cart, [productId]: {
+        quantity: newQuantity,
+        size: cart[product._id]?.size
+      } };
       setCart(updatedCart);
       sendPostRequestCart(updatedCart);
     } else if (newQuantity === 0) {
@@ -133,11 +130,9 @@ function CheckoutPage() {
   };
 
   const getProductPrice = (product) => {
-    let price =
-      product?.productPrices?.find((v) => v?.size == cart[product._id]?.size)
-        ?.price || 0;
+    let price = product?.productPrices?.find(v => v?.size == cart[product._id]?.size)?.price || 0;
     return parseFloat(price)?.toFixed(2);
-  };
+  }
 
   const handleBackClick = () => {
     navigate(-1);
@@ -145,15 +140,13 @@ function CheckoutPage() {
 
   return (
     <>
-      <button
-        className="back-arrow-btn m-2 mb-0 d-flex align-items-center gap-2"
-        onClick={handleBackClick}
-      >
-        <TiArrowLeftThick /> Back
-      </button>
+      <button className="back-arrow-btn m-2 mb-0 d-flex align-items-center gap-2" onClick={handleBackClick}>
+         <TiArrowLeftThick /> Back
+      </button>    
       <div className="checkout-container">
+
         <h2 className="checkout-heading">Checkout</h2>
-        <table className="cart-table" style={{ marginBottom: "13rem" }}>
+        <table className="cart-table"  style={{marginBottom: "13rem"}}>
           <thead>
             <tr>
               <th>Product</th>
@@ -173,14 +166,10 @@ function CheckoutPage() {
                   }
                 >
                   <img
-                    src={`http://localhost:8000/${product.image}`}
+                    src={`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/${product.image}`}
                     alt={product.name}
                     className="rounded"
-                    style={{
-                      width: "5rem",
-                      height: "auto",
-                      objectFit: "contain",
-                    }}
+                    style={{ width: "5rem", height: "auto", objectFit: "contain" }}
                   />
                   <br />
                   {product.name}
@@ -202,10 +191,7 @@ function CheckoutPage() {
                     {cart[product._id]?.quantity}
                     <button
                       onClick={() =>
-                        handleQuantityChange(
-                          product._id,
-                          cart[product._id]?.quantity + 1
-                        )
+                        handleQuantityChange(product._id, cart[product._id]?.quantity + 1)
                       }
                     >
                       +
@@ -218,12 +204,7 @@ function CheckoutPage() {
                     onClick={() => handleQuantityChange(product._id, 0)}
                   />
                 </td>
-                <td>
-                  $
-                  {(
-                    getProductPrice(product) * cart[product._id]?.quantity
-                  ).toFixed(2)}
-                </td>
+                <td>${(getProductPrice(product) * cart[product._id]?.quantity).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
@@ -239,17 +220,15 @@ function CheckoutPage() {
           </tfoot>
         </table>
 
-        <div
-          style={{
-            position: "sticky",
-            bottom: "0",
-            display: "flex",
-            justifyContent: "space-between",
-            borderRadius: "0.5rem",
-            padding: "1rem",
-            background: "white",
-          }}
-        >
+        <div style={{
+          position: "sticky",
+          bottom: "0",
+          display: "flex",
+          justifyContent: "space-between",
+          borderRadius: "0.5rem",
+          padding: "1rem",
+          background: "white"
+        }}>
           <button
             className="continue-shopping-button"
             onClick={handleContinueShopping}

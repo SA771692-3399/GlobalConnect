@@ -193,5 +193,3 @@ export default function Blogs3() {
     </div>
   );
 }
-
-

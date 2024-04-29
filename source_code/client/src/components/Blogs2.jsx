@@ -138,5 +138,3 @@ export default function Blogs2() {
     </div>
   );
 }
-
-

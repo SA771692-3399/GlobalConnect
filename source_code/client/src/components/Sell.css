@@ -43,6 +43,7 @@ body{
     transform:scaleY(1);
 }
 
+
 .fonts{
     font-size:11px;
 }
@@ -59,6 +60,7 @@ body{
     color:#8E24AA;
     font-size:19px;
 }
+
 
 .buttons button:nth-child(1){
        border:1px solid #8E24AA !important;
@@ -79,4 +81,3 @@ body{
        color:#fff;
         height:40px;
 }
-

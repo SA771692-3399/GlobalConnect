@@ -26,7 +26,7 @@ const Tests = ({ productId, google, handlePlaceName }) => {
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 
       const response = await axios.patch(
-        `http://localhost:8000/admin-seller/myproduct/${productId}`,
+        `http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/myproduct/${productId}`,
         { placename }
       );
       console.log(response.data);

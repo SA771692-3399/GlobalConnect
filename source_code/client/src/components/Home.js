@@ -10,6 +10,7 @@ import logo from "../assets/GlobalConnect.png";
 import { Link } from "react-router-dom";
 import Getfeedback from "./Getfeedback";
 
+
 function Home() {
   return (
     <div className="container">
@@ -147,5 +148,3 @@ function Home() {
 }
 
 export default Home;
-
-

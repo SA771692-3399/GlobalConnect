@@ -21,7 +21,7 @@ function ResetPassword() {
         setErrorMessage("Passwords do not match");
         return;
       }
-      const response = await axios.post("http://localhost:8000/reset-password", { token, newPassword });
+      const response = await axios.post("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/reset-password", { token, newPassword });
       setMessage(response.data);
     } catch (error) {
       console.error("Error:", error.response.data);

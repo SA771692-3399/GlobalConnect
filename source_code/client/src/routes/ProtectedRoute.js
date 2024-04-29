@@ -1,4 +1,4 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../provider/AuthProvider";
 
@@ -7,5 +7,6 @@ export const ProtectedRoute = function () {
   if (!token) {
     return <Navigate to="/login"></Navigate>;
   }
+
   return <Outlet />;
 };

@@ -43,7 +43,7 @@ export default function Combo() {
       case 4:
         return "Pickup";
       case 5:
-        return "Home Delivery";
+        return "Home Delevry";
       case 6:
         return "Online & Cahe Payment";
         

@@ -11,7 +11,7 @@ export default function Getfeedback() {
   useEffect(() => {
     async function fetchFeedbacks() {
       try {
-        const response = await axios.get('http://localhost:8000/Listfeedbacks');
+        const response = await axios.get('http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/Listfeedbacks');
         setFeedbacks(response.data);
       } catch (error) {
         console.error('Error fetching feedbacks:', error);

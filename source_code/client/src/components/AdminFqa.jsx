@@ -11,7 +11,7 @@ export default function AdminFqa() {
 
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 
-      const response = await axios.get('http://localhost:8000/admin-seller/listFaq');
+      const response = await axios.get('http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/listFaq');
       setFaqs(response.data.faqs);
     } catch (error) {
       console.error('Error fetching FAQs:', error.message);
@@ -30,7 +30,7 @@ export default function AdminFqa() {
 
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
 
-      await axios.delete(`http://localhost:8000/admin-seller/faqDelete/${faqId}`);
+      await axios.delete(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/faqDelete/${faqId}`);
       // Refresh the FAQs after successful deletion
       fetchFaqs();
     } catch (error) {

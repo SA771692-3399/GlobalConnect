@@ -12,7 +12,7 @@ const AuthProvider = ({ children }) => {
   };
   const setRole = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/check-auth");
+      const res = await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/check-auth");
       localStorage.setItem("Role", res.data.role);
       setRole_(res.data.role);
     } catch (e) {

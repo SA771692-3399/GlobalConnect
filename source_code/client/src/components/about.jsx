@@ -36,4 +36,3 @@ const achievements = [
   { icon: <RiContactsFill   size={60} />, count: "10+", label: "Our Local Business Owner", link: "#" },
   { icon: <MdOutlineProductionQuantityLimits   size={60} />, count: "1500+", label: "Our Products", link: "#" },
 ];
-

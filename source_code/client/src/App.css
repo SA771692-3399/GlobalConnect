@@ -1,38 +1,264 @@
-.App {
+a{
+  text-decoration: none;
+}
+.container {
+  margin: 0 auto;
+  padding: 0;
+}
+input {
+  border: 1px solid #ccc; /* Gray border */
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  background-color: #7e5888;
+}
+
+p{
+  margin: 0;
+  padding: 0;
+}
+.logo {
+  width: 100px; 
+  height: auto;
+}
+
+.menu {
+  flex: 2;
+}
+
+.menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.menu ul li:last-child {
+  margin-right: 0;
+}
+
+.menu ul li a {
+  text-decoration: none;
+  color: #fefefe;
+  font-weight: normal;
+}
+
+.login-container {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.login-button {
+  background-color: white;
+  color: #7e5888;
+  border: 1px solid #7e5888;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.login-button:hover {
+  background-color: #7e5888;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.footer {
+  background-color: #7e5888;
+  color: #fff;
+  padding: 20px 10px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.footer-section {
+  flex: 1;
+}
+
+.footer-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.social-icons {
+  display: flex;
+}
+
+.social-icons a {
+  color: #fff;
+  margin-right: 10px;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.footer-logo{
+  width: 150px;
+}
+
+.main-content {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.project-info {
+  margin-bottom: 50px;
+}
+
+.project-info h2 {
+  font-weight: normal;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.banner-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.categories-section {
+  display: flex;
+  justify-content: space-around; 
+  flex-wrap: wrap; 
+  margin-top: 20px;
+}
+
+.category {
+  flex: 0 1 calc(33.33% - 20px); 
+  margin-bottom: 40px;
+  text-align: center;
+  max-width: 300px; 
+}
+
+.category h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.category p {
+  font-size: 1rem;
+  color: #666;
+  text-align: left;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+h2{
+  font-weight: normal;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.explore-button {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.explore-products-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #7e5888; 
+  border: 1px solid #7e5888;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.explore-products-button:hover {
+  color: #7e5888; 
+  border: 1px solid #7e5888;
+  background-color: #fff;
+}
+
+.become-seller-section {
+  background-color: #7e5888;
+  background-size: cover;
+  background-position: center;
+  padding: 50px; 
+  margin: 50px 0;
+}
+
+.become-seller-section h2 {
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.become-seller-section p {
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+.become-seller-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #fff; 
+  color: #7e5888;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.become-seller-button:hover {
+  background-color: #7e5888;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.feedback-section {
+  margin: 50px 0;
+}
+
+.feedback-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.feedback-section form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.feedback-textarea {
+  width: 50%;
+  height: 150px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.submit-button {
+  width: 100px;
+  padding: 10px;
+  background-color: #7e5888;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 20px 0;
 }
+
+.submit-button:hover {
+  color: #7e5888; 
+  border: 1px solid #7e5888;
+  background-color: #fff;
+}
+

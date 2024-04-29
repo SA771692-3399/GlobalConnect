@@ -37,7 +37,7 @@ export default function OrderSummary() {
     axios.defaults.headers.common["Authorization"] = "Bearer " + token;
     try {
       (async () => {
-        await axios.get("http://localhost:8000/check-auth");
+        await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/check-auth");
       })();
     } catch (e) {
       console.log(e);
@@ -46,7 +46,7 @@ export default function OrderSummary() {
     }
 
     (async () => {
-      const cartRes = await axios.get("http://localhost:8000/user/cart");
+      const cartRes = await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/cart");
       if (cartRes.data.products) {
         const prodJSON = {};
         cartRes.data.products.forEach((c) => {
@@ -68,7 +68,7 @@ export default function OrderSummary() {
         try {
           const productIds = Object.keys(cart);
           const productPromises = productIds.map((productId) =>
-            axios.get(`http://localhost:8000/api/products/${productId}`)
+            axios.get(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/api/products/${productId}`)
           );
           const productResponses = await Promise.all(productPromises);
           const productsData = productResponses.map(
@@ -95,7 +95,7 @@ export default function OrderSummary() {
   const handleCheckout = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/user/create-checkout-session",
+        "http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/create-checkout-session",
         {
           cart,
         }
@@ -181,7 +181,7 @@ export default function OrderSummary() {
                       }
                     >
                       <img
-                        src={`http://localhost:8000/${product.image}`}
+                        src={`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/${product.image}`}
                         alt={product.name}
                         style={{
                           width: "5rem",

@@ -69,7 +69,10 @@ export default function Home2() {
           molestias ipsum optio earum saepe quae et pariatur placeat distinctio.
           Suscipit laborum in eaque similique, ducimus, culpa cupiditate illo
           dolores voluptas quidem ratione ipsam ipsum excepturi nihil provident
-          aperiam doloremque officia.epe quae et pariatur placeat distinctio.
+          aperiam doloremque officia. Mollitia molestias veniam voluptatem
+          earum!  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia atque
+          eligendi illum exercitationem a? Quasi nihil quidem sit, nostrum
+          molestias ipsum optio earum saepe quae et pariatur placeat distinctio.
           Suscipit laborum in eaque similique, ducimus, culpa cupiditate illo
           dolores voluptas quidem ratione ipsam ipsum excepturi nihil provident
           aperiam doloremque officia. Mollitia molestias veniam voluptatem
@@ -85,5 +88,3 @@ export default function Home2() {
     </>
   );
 }
-
-

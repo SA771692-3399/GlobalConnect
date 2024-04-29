@@ -38,7 +38,7 @@ export default function APadmin({ editingProduct, setEditingProduct }) {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/admin-seller/products/${editingProduct}`);
+      const response = await axios.get(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/products/${editingProduct}`);
       const { data } = response;
       setFormData({
         name: data.name || '',
@@ -97,10 +97,10 @@ export default function APadmin({ editingProduct, setEditingProduct }) {
 
     try {
       if (editingProduct) {
-        await axios.put(`http://localhost:8000/admin-seller/products/${editingProduct}`, formData);
+        await axios.put(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/products/${editingProduct}`, formData);
         alert('Product updated successfully!');
       } else {
-        await axios.post('http://localhost:8000/admin-seller/products', formData);
+        await axios.post('http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/products', formData);
         alert('Product added successfully!');
       }
       setFormData(initialFormData);
@@ -228,7 +228,7 @@ export default function APadmin({ editingProduct, setEditingProduct }) {
               src={
                 formData.image && typeof formData.image === "object"
                   ? URL.createObjectURL(formData.image)
-                  : `http://localhost:8000/${formData.image}`
+                  : `http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/${formData.image}`
               }
               alt="Selected"
               style={{ width: "100px", height: "100px" }}
@@ -242,5 +242,3 @@ export default function APadmin({ editingProduct, setEditingProduct }) {
     </div>
   );
 }
-
-

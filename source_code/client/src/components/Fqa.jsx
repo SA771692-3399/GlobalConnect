@@ -12,7 +12,7 @@ const Fqa = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/fqalist");
+        const response = await axios.get("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/fqalist");
         setFaqData(response.data.faqs);
       } catch (error) {
         console.error("Error fetching FAQs:", error.message);

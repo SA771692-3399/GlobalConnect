@@ -37,7 +37,7 @@ function AddFqa() {
 
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
-        const res = await axios.post("http://localhost:8000/admin-seller/addFaq", {
+        const res = await axios.post("http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/addFaq", {
           que: que,
           ans: ans,
         });
@@ -95,5 +95,3 @@ function AddFqa() {
 }
 
 export default AddFqa;
-
-

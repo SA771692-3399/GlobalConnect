@@ -23,7 +23,7 @@ export default function Galry({
 
         const fetchAllData = async () => {
             try {
-                const res = await http.get(`http://localhost:8000/admin-seller/getallproductimgs/${selectedProduct._id}`);
+                const res = await http.get(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/admin-seller/getallproductimgs/${selectedProduct._id}`);
                
                 setDatas(res.data.productImages || []);
                 console.log(res.data.productImages);
@@ -49,7 +49,7 @@ export default function Galry({
                 style={{border:"none", boxShadow:"none", borderRadius:"none"}}
                 src={
                   selectedImg === undefined
-                    ? "http://localhost:8000/" + selectedProduct.image
+                    ? "http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/" + selectedProduct.image
                     : selectedImg
                 }
                 alt=""
@@ -62,11 +62,11 @@ export default function Galry({
               <div className="imgContainer mb-2" id="imgContainer-resp" style={{display:"flex", justifyContent:"center"}}>
                 {datas.map((img, index) => (
                   <img
-                    src={"http://localhost:8000/" + img.image}
+                    src={"http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/" + img.image}
                     style={{
                       border:
                         selectedImg ===
-                        "http://localhost:8000/" + img.image
+                        "http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/" + img.image
                           ? "4px solid skyblue"
                           : "",
                           width:"5rem",
@@ -77,7 +77,7 @@ export default function Galry({
                     alt=""
                     onClick={() =>
                       setSelectedImg(
-                        "http://localhost:8000/" + img.image
+                        "http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/" + img.image
                       )
                     }
                     className="smallImg m-1"
@@ -93,5 +93,3 @@ export default function Galry({
         </>
     );
 }
-
-

@@ -21,7 +21,7 @@ const WishList = ({ addToCart }) => {
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
         const response = await axios.get(
-          `http://localhost:8000/user/listwishlist/${userID}`
+          `http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/listwishlist/${userID}`
         );
         setWishlistItems(response.data.wishlistItems);
         setIsLoading(false);
@@ -40,11 +40,11 @@ const WishList = ({ addToCart }) => {
       if (!token) throw new Error("No token found");
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
-      await axios.delete(`http://localhost:8000/user/deletewishlist/${itemId}`);
+      await axios.delete(`http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/deletewishlist/${itemId}`);
       notifySuccess("Item deleted from Wishlist");
       // After successful deletion, fetch updated wishlist data
       const response = await axios.get(
-        `http://localhost:8000/user/listwishlist/${userID}`
+        `http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/user/listwishlist/${userID}`
       );
       setWishlistItems(response.data.wishlistItems);
     } catch (error) {
@@ -71,6 +71,7 @@ const WishList = ({ addToCart }) => {
                 <th scope="col">#</th>
                 <th scope="col">Picture</th>
                 <th scope="col">Name</th>
+                <th scope="col">Size</th>
                 <th scope="col">Price</th>
                 <th scope="col">ADD to Cart</th>
                 <th scope="col">Action</th>
@@ -85,7 +86,7 @@ const WishList = ({ addToCart }) => {
                     <img
                       src={
                         item._id
-                          ? `http://localhost:8000/${item.image}`
+                          ? `http://ec2-52-14-66-37.us-east-2.compute.amazonaws.com:8000/${item.image}`
                           : item.image
                       }
                       alt={item.name}
@@ -94,11 +95,12 @@ const WishList = ({ addToCart }) => {
                     />
                   </td>
                   <td>{item.name}</td>
-                  <td>{item.price}$</td>
+                  <td>{item.productPrices?.[0]?.size}</td>
+                  <td>${item.productPrices?.[0]?.price}</td>
                   <td>
                     <button
                       className="add-to-cart-btn"
-                      onClick={() => addToCart(item.productID, item.name)}
+                      onClick={() => addToCart(item.productID, item.name, item?.productPrices?.[0]?.size)}
                     >
                       Add to Cart
                     </button>
