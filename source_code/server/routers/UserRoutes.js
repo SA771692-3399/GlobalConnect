@@ -518,7 +518,149 @@ const sendEmailToUser = (email, products, Order) => {
    </tr>`
  )).join('');
  
+ const mailOptions = {
+   from: process.env.NO_REPLY_EMAIL,
+   to: email,
+   subject: "Order confirmation",
+   html: `
+     <!doctype html>
+     <html lang="en">
  
+     <head>
+       <!-- Required meta tags -->
+       <meta charset="utf-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+ 
+       <style>
+         table,
+         th,
+         td {
+           border: 1px solid black;
+           border-collapse: collapse;
+         }
+ 
+         th, td {
+           padding: 0.5rem 1rem;
+           text-align: left;
+         }
+ 
+         th {
+           background-color: #f2f2f2;
+         }
+       </style>
+     </head>
+ 
+     <body>
+       <h2>Order details</h2>
+       <table>
+         <tr>
+           <td><b>Order ID</b></td>
+           <td>${Order?._id ?? "--"}</td>
+         </tr>
+         <tr>
+           <td><b>Payment Status</b></td>
+           <td>${Order?.payment_status ?? "--"}</td>
+         </tr>
+         <tr>
+           <td><b>Delivery Status</b></td>
+           <td>${Order?.deliveryStatus ?? "--"}</td>
+         </tr>
+         <tr>
+           <td><b>Delivery Expected</b></td>
+           <td>${moment(Order?.deliveryDate ?? "--").format("MMM DD, YYYY")}</td>
+         </tr>
+       </table>
+ 
+       <h2>Ordered Items</h2>
+       <table>
+         <thead>
+           <tr>
+             <th>Name</th>
+             <th>Size</th>
+             <th>Qty</th>
+             <th>Price</th>
+           </tr>
+         </thead>
+         <tbody>
+           ${orderedItemsHTML}
+         </tbody>
+       </table>
+     </body>
+ 
+     </html>
+   `,
+ };
+ 
+ transporter.sendMail(mailOptions, (error, info) => {
+   if (error) {
+     console.error(error);
+   } else {
+     console.log("Order confirmation sent to email: " + email);
+   }
+ });
+}
+ 
+const sendEmailToSeller = async (Order) => {
+ 
+ let sellers = {};
+ 
+ Order?.productsOrdered?.forEach(product => {
+     let sellerId = product.sellerId;
+     
+     if (sellers[sellerId]) {
+         sellers[sellerId].push(product);
+     } else {
+         sellers[sellerId] = [product];
+     }
+ });
+ 
+ 
+ Object?.entries(sellers)?.map(async ([sellerID, products]) => {
+   let userData = await UserModel.findOne({ _id: sellerID });
+ 
+   sendEmailToUser(userData?.Email, products, Order);
+ })
+}
+ 
+router.get('/ratings/:pID', async (req, res) => {
+ try {
+   const pID = req.params.pID; // Extract product ID from URL parameter
+ 
+   // Check if productID is provided
+   if (!pID) {
+     return res.status(400).send({ message: 'ProductID is required' });
+   }
+ 
+   // Fetch data for the given productID
+   const productData = await ProductfModel.find({ productID: pID });
+ 
+   if (!productData || productData.length === 0) {
+     return res.status(404).send({ message: 'No data found for the ProductID' });
+   }
+ 
+   // Calculate the sum of all ratings
+   const totalRatings = productData.reduce((sum, product) => {
+     return sum + product.rating;
+   }, 0);
+ 
+   // Calculate the average rating
+   const averageRating = totalRatings / productData.length;
+ 
+   res.status(200).send({ averageRating });
+ } catch (error) {
+   console.error('Error fetching product data:', error);
+   res.status(500).send({ message: 'Internal server error' });
+ }
+});
+ 
+router.get('/sel/:pID', async (req, res) => {
+ try {
+   const pID = req.params.pID; // Extract product ID from URL parameter
+ 
+   // Check if productID is provided
+   if (!pID) {
+     return res.status(400).send({ message: 'User id required is required' });
+   }
  
    // Fetch user data for the given _id (pID)
    const userData = await UserModel.findById(pID);
